@@ -1,4 +1,10 @@
+import sys
+import os
+sys.path.append('.')
 from AttractionTag import *
+from packages.location.Location import *
+from packages.rating.Rating import *
+
 class Attraction:
     def __init__(self) -> None:
         self.__name = ''
@@ -8,9 +14,8 @@ class Attraction:
         self.__imgPath = []
         # attraction tags object
         self.__attractionTag = AttractionTag()
-
         # location object
-
-        
+        self.__location = Location()
         # rating object
+        self.rating = Rating()
         
