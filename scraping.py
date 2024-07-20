@@ -16,9 +16,10 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.edge.service import Service
 from selenium.webdriver.edge.options import Options as EdgeOptions
 
-edge_driver_path = "D:\XSectorZ\GitHubRepoes\CEPPTravelScraping\CEPPWebScraping\msedgedriver.exe"
-service = Service(executable_path=edge_driver_path)
-driver = webdriver.Edge(service = service)
+# edge_driver_path = "D:\XSectorZ\GitHubRepoes\CEPPTravelScraping\CEPPWebScraping\msedgedriver.exe"
+# service = Service(executable_path=edge_driver_path)
+driver = webdriver.Chrome()
+
 #url = "https://thai.tourismthailand.org/Search-result/attraction?destination_id=238&sort_by=datetime_updated_desc&page=1&perpage=15&menu=attraction"
 #url = "https://www.google.com/maps/search/%E0%B8%AA%E0%B8%96%E0%B8%B2%E0%B8%99%E0%B8%97%E0%B8%B5%E0%B9%88%E0%B8%97%E0%B9%88%E0%B8%AD%E0%B8%87%E0%B9%80%E0%B8%97%E0%B8%B5%E0%B9%88%E0%B8%A2%E0%B8%A7%E0%B8%A3%E0%B8%B2%E0%B8%8A%E0%B8%9A%E0%B8%B8%E0%B8%A3%E0%B8%B5/@13.5524175,98.9526212,9z/data=!3m1!4b1?entry=ttu"
 url = "https://www.google.com/maps/search/%E0%B8%97%E0%B9%88%E0%B8%AD%E0%B8%87%E0%B9%80%E0%B8%97%E0%B8%B5%E0%B9%88%E0%B8%A2%E0%B8%A7%E0%B9%80%E0%B8%82%E0%B8%95%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%99%E0%B8%84%E0%B8%A3/@13.7540829,100.4870287,15z/data=!3m1!4b1?authuser=0&entry=ttu"
