@@ -1,5 +1,5 @@
 ALL_PROVINCE_TH = [
-       'กรุงเทพมหานคร', 'นครราชสีมา', 'อุบลราชธานี', 'พระนครศรีอยุธยา', 'ศรีสะเกษ', 
+       'นครราชสีมา', 'กรุงเทพมหานคร', 'อุบลราชธานี', 'พระนครศรีอยุธยา', 'ศรีสะเกษ', 
        'เชียงใหม่', 'ขอนแก่น', 'ร้อยเอ็ด', 'บุรีรัมย์', 'นครศรีธรรมราช',
        'สุรินทร์', 'อุดรธานี', 'กาฬสินธุ์', 'มหาสารคาม', 'สุราษฎร์ธานี',
        'นครสวรรค์', 'สงขลา', 'สกลนคร', 'ชัยภูมิ', 'เชียงราย', 'ลพบุรี',
@@ -16,7 +16,7 @@ ALL_PROVINCE_TH = [
    ]
 
 ALL_PROVINCE_ENG = [
-       'Bangkok', 'Nakhon Ratchasima', 'Ubon Ratchathani', 'Phra Nakhon Si Ayutthaya', 'Si Sa Ket', 
+       'Nakhon Ratchasima', 'Bangkok', 'Ubon Ratchathani', 'Phra Nakhon Si Ayutthaya', 'Si Sa Ket', 
        'Chiang Mai', 'Khon Kaen', 'Roi Et', 'Buri Ram',
        'Nakhon Si Thammarat', 'Surin', 'Udon Thani', 'Kalasin',
        'Maha Sarakham', 'Surat Thani', 'Nakhon Sawan', 'Songkhla',
