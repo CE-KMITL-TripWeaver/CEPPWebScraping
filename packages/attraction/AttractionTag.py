@@ -1,6 +1,6 @@
 class AttractionTag:
     def __init__(self) -> None:
-        self.__tag_scores = {
+        self.__tag_score = {
             "Tourism"       : 0,						
             "Adventure"     : 0,					
             "Meditation"	: 0,			
@@ -42,15 +42,15 @@ class AttractionTag:
 
     ## define getter method
 
-    def get_attractionTag(self, key:str) -> float:
-        return self.__tag_scores.get(key, -1)
+    def get_tag_score(self, key:str) -> float:
+        return self.__tag_score.get(key, -1)
     
     
     ## define setter method
 
-    def set_attractionTag(self, key:str, val:float) -> None:
-        if(self.get_attractionTag(key) == -1):
+    def set_tag_score(self, key:str, val:float) -> None:
+        if(self.get_tag_score(key) == -1):
             return
-        self.__tag_scores[key] = val
+        self.__tag_score[key] = val
         
         
