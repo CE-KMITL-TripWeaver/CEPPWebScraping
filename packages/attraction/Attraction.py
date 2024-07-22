@@ -11,7 +11,7 @@ class Attraction:
         self.__description = ''
         self.__latitude = 0
         self.__longitude = 0
-        self.__imgPath = []
+        self.__imgPath = ['']
         # attraction tags object
         self.__attractionTag = AttractionTag()
         # location object
@@ -35,7 +35,7 @@ class Attraction:
         return self.__longitude
     
     def get_imgPath(self) -> list[str]:
-        return self.__imgPath
+        return self.__imgPath.copy()
     
     def get_attractionTag(self) -> AttractionTag:
         return self.__attractionTag

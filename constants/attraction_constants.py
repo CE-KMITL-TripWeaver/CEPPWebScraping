@@ -33,3 +33,13 @@ ALL_PROVINCE_ENG = [
        'Prachuap Khiri Khan', 'Mae Hong Son', 'Sing Buri', 'Nakhon Nayok',
        'Samut Sakhon', 'Trat', 'Samut Songkhram', 'Satun', 'Ranong', 'Phuket'
    ]
+
+ATTRACTION_TAG_SCORE = [
+        "Tourism", "Adventure",	"Meditation", "Art", "Cultural",
+        "Landscape", "Nature", "Historical", "Cityscape", "Beach",
+        "Mountain", "Architecture", "Temple", "WalkingStreet", "Market",
+        "Village", "NationalPark", "Diving", "Snuggle", "Waterfall",
+        "Island", "Shopping", "Camping", "Fog", "Cycling",
+        "Monument", "Zoo", "Waterpark", "Hiking", "Museum",
+        "Riverside", "NightLife", "Family", "Kid", "Landmark", "Forest",
+]
