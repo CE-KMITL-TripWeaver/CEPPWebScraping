@@ -62,3 +62,19 @@ class Attraction:
     
     def set_imgPath(self, imgPath:list[str]) -> None:
         self.__imgPath = imgPath.copy()
+
+    def set_tag_score(self, key:str, val:float) -> None:
+        self.__attractionTag.set_tag_score(key, val)
+    
+    def set_location(self, address: str, province: str, district: str, sub_district: str, iso_code: int, zip_code: int, geo_code: int) -> None:
+        self.__location.set_address(address)
+        self.__location.set_province(province)
+        self.__location.set_district(district)
+        self.__location.set_subDistrict(sub_district)
+        self.__location.set_ISO_3166_code(iso_code)
+        self.__location.set_zip_code(zip_code)
+        self.__location.set_geo_code(geo_code)
+
+    def set_rating(self, score: float, rating_count: int) -> None:
+        self.__rating.set_score(score)
+        self.__rating.set_ratingCount(rating_count)    
