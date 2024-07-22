@@ -19,3 +19,8 @@ STORE_PACKAGES = os.path.join(path_to_proj, 'packages')
 
 # path to 'geocode.csv'
 PATH_TO_GEOCODE = os.path.join(path_to_proj, 'geocode.csv')
+
+
+### path for destination to store result of 'attraction_scraping' ###
+
+STORE_ATTRACTION_SCRAPING = os.path.join(path_to_proj, 'attraction_scraping')
