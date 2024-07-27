@@ -66,10 +66,10 @@ class Attraction:
     def set_description(self, description:str) -> None:
         self.__description = description        
     
-    def set_latitude(self, latitude:str) -> None:
+    def set_latitude(self, latitude:float) -> None:
         self.__latitude = latitude
     
-    def set_longitude(self, longitude:str) -> None:
+    def set_longitude(self, longitude:float) -> None:
         self.__longitude = longitude
     
     def set_imgPath(self, imgPath:list[str]) -> None:
