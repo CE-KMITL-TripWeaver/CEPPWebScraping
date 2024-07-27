@@ -12,6 +12,9 @@ class Attraction:
         self.__latitude = 0
         self.__longitude = 0
         self.__imgPath = ['']
+        self.__phone = ''
+        self.website = ''
+        self.openingHour = {}
         # attraction tags object
         self.__attractionTag = AttractionTag()
         # location object
@@ -37,6 +40,15 @@ class Attraction:
     def get_imgPath(self) -> list[str]:
         return self.__imgPath.copy()
     
+    def get_phone(self) -> str:
+        return self.__phone
+    
+    def get_website(self) -> str:
+        return self.website
+    
+    def get_openingHour(self) -> dict:
+        return self.openingHour.copy()
+    
     def get_attractionTag(self) -> AttractionTag:
         return self.__attractionTag
     
@@ -47,7 +59,7 @@ class Attraction:
         return self.__rating
 
 
-    ## define getter methods
+    ## define setter methods
     def set_name(self, name:str) -> None:
         self.__name = name
     
@@ -62,6 +74,15 @@ class Attraction:
     
     def set_imgPath(self, imgPath:list[str]) -> None:
         self.__imgPath = imgPath.copy()
+
+    def set_phone(self, phone:str) -> None:
+        self.__phone = phone
+    
+    def set_website(self, website:str) -> None:
+        self.website = website
+    
+    def set_openingHour(self, openingHour:dict) -> None:
+        self.openingHour = openingHour.copy()
 
     def set_tag_score(self, key:str, val:float) -> None:
         self.__attractionTag.set_tag_score(key, val)
