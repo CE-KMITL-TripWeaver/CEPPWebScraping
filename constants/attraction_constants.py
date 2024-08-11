@@ -1,5 +1,5 @@
 ALL_PROVINCE_TH = [
-       'นครราชสีมา', 'กรุงเทพมหานคร', 'อุบลราชธานี', 'พระนครศรีอยุธยา', 'ศรีสะเกษ', 
+       'ภูเก็ต', 'นครราชสีมา', 'กรุงเทพมหานคร', 'อุบลราชธานี', 'พระนครศรีอยุธยา', 'ศรีสะเกษ', 
        'เชียงใหม่', 'ขอนแก่น', 'ร้อยเอ็ด', 'บุรีรัมย์', 'นครศรีธรรมราช',
        'สุรินทร์', 'อุดรธานี', 'กาฬสินธุ์', 'มหาสารคาม', 'สุราษฎร์ธานี',
        'นครสวรรค์', 'สงขลา', 'สกลนคร', 'ชัยภูมิ', 'เชียงราย', 'ลพบุรี',
@@ -12,11 +12,11 @@ ALL_PROVINCE_TH = [
        'อำนาจเจริญ', 'ชัยนาท', 'กระบี่', 'บึงกาฬ', 'มุกดาหาร', 'นนทบุรี',
        'ลำพูน', 'สมุทรปราการ', 'พังงา', 'ประจวบคีรีขันธ์', 'แม่ฮ่องสอน',
        'สิงห์บุรี', 'นครนายก', 'สมุทรสาคร', 'ตราด', 'สมุทรสงคราม', 'สตูล',
-       'ระนอง', 'ภูเก็ต'
+       'ระนอง'
    ]
 
 ALL_PROVINCE_ENG = [
-       'Nakhon Ratchasima', 'Bangkok', 'Ubon Ratchathani', 'Phra Nakhon Si Ayutthaya', 'Si Sa Ket', 
+       'Phuket', 'Nakhon Ratchasima', 'Bangkok', 'Ubon Ratchathani', 'Phra Nakhon Si Ayutthaya', 'Si Sa Ket', 
        'Chiang Mai', 'Khon Kaen', 'Roi Et', 'Buri Ram',
        'Nakhon Si Thammarat', 'Surin', 'Udon Thani', 'Kalasin',
        'Maha Sarakham', 'Surat Thani', 'Nakhon Sawan', 'Songkhla',
@@ -31,7 +31,7 @@ ALL_PROVINCE_ENG = [
        'Amnat Charoen', 'Chai Nat', 'Krabi', 'Bueng Kan', 'Mukdahan',
        'Nonthaburi', 'Lamphun', 'Samut Prakan', 'Phangnga',
        'Prachuap Khiri Khan', 'Mae Hong Son', 'Sing Buri', 'Nakhon Nayok',
-       'Samut Sakhon', 'Trat', 'Samut Songkhram', 'Satun', 'Ranong', 'Phuket'
+       'Samut Sakhon', 'Trat', 'Samut Songkhram', 'Satun', 'Ranong'
    ]
 
 ATTRACTION_TAG_SCORE = [
