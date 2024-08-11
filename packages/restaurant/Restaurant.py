@@ -7,6 +7,7 @@ from packages.rating.Rating import *
 class Restaurant:
     def __init__(self) -> None:
         self.name = ''
+        self.sub_name = ''
         self.wongnai_url = ''
         self.restaurantTag = []
         self.facility = []
@@ -33,6 +34,9 @@ class Restaurant:
     ## define getter methods
     def get_name(self) -> str:
         return self.name 
+
+    def get_sub_name(self) -> str:
+        return self.sub_name 
 
     def get_wongnai_url(self) -> str:
         return self.wongnai_url
@@ -77,6 +81,9 @@ class Restaurant:
     ## define setter methods
     def set_name(self, name: str) -> None:
         self.name = name
+
+    def set_sub_name(self, sub_name: str) -> None:
+        self.sub_name = sub_name
 
     def set_wongnai_url(self, wongnai_url: str) -> None:
         self.wongnai_url = wongnai_url
