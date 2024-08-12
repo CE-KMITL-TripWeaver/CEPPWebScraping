@@ -6,25 +6,25 @@ from packages.rating.Rating import *
 
 class Restaurant:
     def __init__(self) -> None:
-        self.name = ''
-        self.sub_name = ''
-        self.wongnai_url = ''
-        self.restaurantTag = []
-        self.facility = []
+        self.__name = ''
+        self.__sub_name = ''
+        self.__wongnai_url = ''
+        self.__restaurantTag = []
+        self.__facility = []
         self.__description = ''
         self.__latitude = 0
         self.__longitude = 0
         self.__imgPath = ['']
         self.__phone = []
-        # location in key-value pair for example: 
+        # website in key-value pair for example: 
         # {
         #     "Facebook"  : "https://www.facebook.com/Buono@Ranong",
         #     "Instagram" : "https://www.instagram.com/buonoranong/",
         #     "LINE@"     : "http://line.naver.jp/ti/p/@Buono%20Ranong"
         # }
-        self.website = {}
-        self.openingHour = {}
-        self.priceRange = ''
+        self.__website = {}
+        self.__openingHour = {}
+        self.__priceRange = ''
         # location object
         self.__location = Location()
         # rating object
@@ -33,19 +33,19 @@ class Restaurant:
 
     ## define getter methods
     def get_name(self) -> str:
-        return self.name 
+        return self.__name 
 
     def get_sub_name(self) -> str:
-        return self.sub_name 
+        return self.__sub_name 
 
     def get_wongnai_url(self) -> str:
-        return self.wongnai_url
+        return self.__wongnai_url
     
     def get_restaurantTag(self) -> list[str]:
-        return self.restaurantTag.copy()
+        return self.__restaurantTag.copy()
     
     def get_facility(self) -> list[str]:
-        return self.facility.copy()
+        return self.__facility.copy()
 
     def get_description(self) -> str:
         return self.__description
@@ -63,13 +63,13 @@ class Restaurant:
         return self.__phone.copy()    
 
     def get_website(self) -> dict:
-        return self.website.copy()
+        return self.__website.copy()
 
     def get_openingHour(self) -> dict:
-        return self.openingHour.copy()
+        return self.__openingHour.copy()
     
     def get_priceRange(self) -> str:
-        return self.priceRange
+        return self.__priceRange
     
     def get_location(self) -> Location:
         return self.__location
@@ -80,19 +80,19 @@ class Restaurant:
 
     ## define setter methods
     def set_name(self, name: str) -> None:
-        self.name = name
+        self.__name = name
 
     def set_sub_name(self, sub_name: str) -> None:
-        self.sub_name = sub_name
+        self.__sub_name = sub_name
 
     def set_wongnai_url(self, wongnai_url: str) -> None:
-        self.wongnai_url = wongnai_url
+        self.__wongnai_url = wongnai_url
     
     def set_restaurantTag(self, restaurantTag: list[str]) -> None:
-        self.restaurantTag = restaurantTag.copy()
+        self.__restaurantTag = restaurantTag.copy()
     
     def set_facility(self, facility: list[str]) -> None:
-        self.facility = facility.copy()
+        self.__facility = facility.copy()
 
     def set_description(self, description: str) -> None:
         self.__description = description
@@ -110,13 +110,13 @@ class Restaurant:
         self.__phone = phone.copy()    
 
     def set_website(self, website:dict) -> None:
-        self.website = website.copy()
+        self.__website = website.copy()
 
     def set_openingHour(self, openingHour:dict) -> None:
-        self.openingHour = openingHour.copy()
+        self.__openingHour = openingHour.copy()
     
     def set_priceRange(self, priceRange: str) -> None:
-        self.priceRange = priceRange
+        self.__priceRange = priceRange
 
     def set_location(self, address: str, province: str, district: str, sub_district: str, iso_code: int, zip_code: int, geo_code: int) -> None:
         self.__location.set_address(address)

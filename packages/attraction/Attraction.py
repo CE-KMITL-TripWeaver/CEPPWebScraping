@@ -13,8 +13,8 @@ class Attraction:
         self.__longitude = 0
         self.__imgPath = ['']
         self.__phone = ''
-        self.website = ''
-        self.openingHour = {}
+        self.__website = ''
+        self.__openingHour = {}
         # attraction tags object
         self.__attractionTag = AttractionTag()
         # location object
@@ -44,10 +44,10 @@ class Attraction:
         return self.__phone
     
     def get_website(self) -> str:
-        return self.website
+        return self.__website
     
     def get_openingHour(self) -> dict:
-        return self.openingHour.copy()
+        return self.__openingHour.copy()
     
     def get_attractionTag(self) -> AttractionTag:
         return self.__attractionTag
@@ -79,10 +79,10 @@ class Attraction:
         self.__phone = phone
     
     def set_website(self, website:str) -> None:
-        self.website = website
+        self.__website = website
     
     def set_openingHour(self, openingHour:dict) -> None:
-        self.openingHour = openingHour.copy()
+        self.__openingHour = openingHour.copy()
 
     def set_tag_score(self, key:str, val:float) -> None:
         self.__attractionTag.set_tag_score(key, val)
