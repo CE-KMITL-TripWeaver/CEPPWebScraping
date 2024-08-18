@@ -9,7 +9,7 @@ class Restaurant:
         self.__name = ''
         self.__sub_name = ''
         self.__wongnai_url = ''
-        self.__restaurantTag = []
+        self.__restaurantType = []
         self.__facility = []
         self.__description = ''
         self.__latitude = 0
@@ -41,8 +41,8 @@ class Restaurant:
     def get_wongnai_url(self) -> str:
         return self.__wongnai_url
     
-    def get_restaurantTag(self) -> list[str]:
-        return self.__restaurantTag.copy()
+    def get_restaurantType(self) -> list[str]:
+        return self.__restaurantType.copy()
     
     def get_facility(self) -> list[str]:
         return self.__facility.copy()
@@ -88,8 +88,8 @@ class Restaurant:
     def set_wongnai_url(self, wongnai_url: str) -> None:
         self.__wongnai_url = wongnai_url
     
-    def set_restaurantTag(self, restaurantTag: list[str]) -> None:
-        self.__restaurantTag = restaurantTag.copy()
+    def set_restaurantType(self, restaurantType: list[str]) -> None:
+        self.__restaurantType = restaurantType.copy()
     
     def set_facility(self, facility: list[str]) -> None:
         self.__facility = facility.copy()

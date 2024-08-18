@@ -24,3 +24,8 @@ PATH_TO_GEOCODE = os.path.join(path_to_proj, 'geocode.csv')
 ### path for destination to store result of 'attraction_scraping' ###
 
 STORE_ATTRACTION_SCRAPING = os.path.join(path_to_proj, 'attraction_scraping')
+
+
+### path for destination to store result of 'restaurant_scraping' ###
+
+STORE_RESTAURANT_SCRAPING = os.path.join(path_to_proj, 'restaurant_scraping')
