@@ -4,9 +4,9 @@ class Location:
         self.__province = ""
         self.__district = ""
         self.__subDistrict = ""
-        self.__ISO_3166_code = 0
-        self.__zip_code = 0
-        self.__geo_code = 0
+        self.__province_code = 0
+        self.__district_code = 0
+        self.__sub_district_code = 0
 
 
     ## define getter methods
@@ -23,14 +23,14 @@ class Location:
     def get_subDistrict(self) -> str:
         return self.__subDistrict
     
-    def get_ISO_3166_code(self) -> int:
-        return self.__ISO_3166_code
+    def get_province_code(self) -> int:
+        return self.__province_code
     
-    def get_zip_code(self) -> int:
-        return self.__zip_code
+    def get_district_code(self) -> int:
+        return self.__district_code
     
-    def get_geo_code(self) -> int:
-        return self.__geo_code
+    def get_sub_district_code(self) -> int:
+        return self.__sub_district_code
     
 
     ## define setter methods
@@ -47,11 +47,11 @@ class Location:
     def set_subDistrict(self, subDistrict:str) -> None:
         self.__subDistrict = subDistrict
     
-    def set_ISO_3166_code(self, ISO_3166_code:int) -> None:
-        self.__ISO_3166_code = ISO_3166_code
+    def set_province_code(self, province_code:int) -> None:
+        self.__province_code = province_code
     
-    def set_zip_code(self, zip_code:int) -> None:
-        self.__zip_code = zip_code
+    def set_district_code(self, district_code:int) -> None:
+        self.__district_code = district_code
     
-    def set_geo_code(self, geo_code:int) -> None:
-        self.__geo_code = geo_code   
+    def set_sub_district_code(self, sub_district_code:int) -> None:
+        self.__sub_district_code = sub_district_code 

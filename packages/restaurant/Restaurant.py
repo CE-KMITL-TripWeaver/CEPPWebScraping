@@ -118,14 +118,14 @@ class Restaurant:
     def set_priceRange(self, priceRange: str) -> None:
         self.__priceRange = priceRange
 
-    def set_location(self, address: str, province: str, district: str, sub_district: str, iso_code: int, zip_code: int, geo_code: int) -> None:
+    def set_location(self, address: str, province: str, district: str, sub_district: str, province_code: int, district_code: int, sub_district_code: int) -> None:
         self.__location.set_address(address)
         self.__location.set_province(province)
         self.__location.set_district(district)
         self.__location.set_subDistrict(sub_district)
-        self.__location.set_ISO_3166_code(iso_code)
-        self.__location.set_zip_code(zip_code)
-        self.__location.set_geo_code(geo_code)
+        self.__location.set_province_code(province_code)
+        self.__location.set_district_code(district_code)
+        self.__location.set_sub_district_code(sub_district_code)
 
     def set_rating(self, score: float, rating_count: int) -> None:
         self.__rating.set_score(score)
