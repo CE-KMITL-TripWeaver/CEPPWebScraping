@@ -1,0 +1,163 @@
+Status: running
+Connecting to browser...
+Connected! Navigate to site...
+Navigated! Waiting for popup...
+Popup appeared! Closing...
+Popup closed!
+Waiting for search form...
+Search form appeared! Filling it...
+Form filled! Submitting and waiting for result...
+Parsing data...
+Data parsed: [
+  {
+    "name": "Aura Hotel Times Square Newly Renovated",
+    "price": "$134",
+    "score": "Scored 8.2",
+    "reviews": 96
+  },
+  {
+    "name": "45 Times Square Hotel",
+    "price": "$153",
+    "score": "Scored 8.3",
+    "reviews": 2231
+  },
+  {
+    "name": "Marriott Vacation Club®, New York City ",
+    "price": "$159",
+    "score": "Scored 8.7",
+    "reviews": 354
+  },
+  {
+    "name": "Fairfield Inn & Suites by Marriott New York Manhattan/Chelsea",
+    "price": "$127",
+    "score": "Scored 7.9",
+    "reviews": 1061
+  },
+  {
+    "name": "Four Points by Sheraton Manhattan SoHo Village",
+    "price": "$109",
+    "score": "Scored 7.6",
+    "reviews": 903
+  },
+  {
+    "name": "Hilton Garden Inn New York/Tribeca",
+    "price": "$109",
+    "score": "Scored 7.6",
+    "reviews": 681
+  },
+  {
+    "name": "Embassy Suites By Hilton New York Manhattan Times Square",
+    "price": "$137",
+    "score": "Scored 7.8",
+    "reviews": 4368
+  },
+  {
+    "name": "Courtyard by Marriott Times Square West",
+    "price": "$135",
+    "score": "Scored 8.2",
+    "reviews": 2988
+  },
+  {
+    "name": "Hampton Inn Manhattan-35th St Empire State Bldg",
+    "price": "$149",
+    "score": "Scored 8.2",
+    "reviews": 6864
+  },
+  {
+    "name": "Hyatt Place New York City/Times Square",
+    "price": "$139",
+    "score": "Scored 7.6",
+    "reviews": 21858
+  },
+  {
+    "name": "Mayfair Hotel, Ascend Hotel Collection",
+    "price": "$109",
+    "score": "Scored 8.6",
+    "reviews": 1166
+  },
+  {
+    "name": "Hampton Inn Times Square Central",
+    "price": "$159",
+    "score": "Scored 8.3",
+    "reviews": 2978
+  },
+  {
+    "name": "Hilton Garden Inn New York/Manhattan-Chelsea",
+    "price": "$135",
+    "score": "Scored 7.9",
+    "reviews": 4361
+  },
+  {
+    "name": "SpringHill Suites by Marriott New York Manhattan/Times Square South",
+    "price": "$153",
+    "score": "Scored 8.1",
+    "reviews": 7558
+  },
+  {
+    "name": "Fairfield Inn & Suites by Marriott New York Manhattan/Fifth Avenue",
+    "price": "$149",
+    "score": "Scored 7.4",
+    "reviews": 583
+  },
+  {
+    "name": "Hyatt Place NYC Chelsea",
+    "price": "$139",
+    "score": "Scored 7.9",
+    "reviews": 16919
+  },
+  {
+    "name": "The Belvedere Hotel",
+    "price": "$122",
+    "score": "Scored 8.0",
+    "reviews": 5902
+  },
+  {
+    "name": "U Hotel Fifth Avenue, Empire State Building",
+    "price": "$116",
+    "score": "Scored 7.9",
+    "reviews": 3264
+  },
+  {
+    "name": "DoubleTree by Hilton New York Times Square South",
+    "price": "$149",
+    "score": "Scored 8.0",
+    "reviews": 6288
+  },
+  {
+    "name": "Hilton Garden Inn New York/Midtown Park Avenue",
+    "price": "$140",
+    "score": "Scored 8.0",
+    "reviews": 2098
+  },
+  {
+    "name": "Hotel Shocard Broadway, Times Square",
+    "price": "$99",
+    "score": "Scored 7.3",
+    "reviews": 2577
+  },
+  {
+    "name": "Hilton Garden Inn New York Times Square South",
+    "price": "$149",
+    "score": "Scored 8.1",
+    "reviews": 4421
+  },
+  {
+    "name": "SpringHill Suites by Marriott New York Manhattan Chelsea",
+    "price": "$159",
+    "score": "Scored 8.2",
+    "reviews": 9731
+  },
+  {
+    "name": "The Chelsean New York",
+    "price": "$109",
+    "score": "Scored 7.1",
+    "reviews": 2051
+  },
+  {
+    "name": "Best Western Premier Herald Square",
+    "price": "$131",
+    "score": "Scored 7.6",
+    "reviews": 730
+  }
+]
+Status: ready
