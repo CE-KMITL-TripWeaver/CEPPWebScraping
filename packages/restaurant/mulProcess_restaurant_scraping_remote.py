@@ -36,6 +36,16 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
 from selenium.webdriver.edge.remote_connection import EdgeRemoteConnection
 
+# for testing method implement multiprocessing in jupyternotebook
+def test_mulProcess_method(num1):
+    print("prn enter testMulProces")
+    return 4 * num1
+
+# for testing method implement multiprocessing in jupyternotebook
+def test_mulProcess_more_params_method(num_1, num_2):
+    print("prn enter testMulProces")
+    return 4 * num_1 + num_2
+
 def create_restaurant_df(restaurant: Restaurant) -> pd.DataFrame:
     restaurant_dict = {
         'name': [restaurant.get_name()],
@@ -675,50 +685,53 @@ def get_data_by_page(query_url: str, res_restaurant_df: pd.DataFrame) -> list[tu
     return res_data_by_page.copy()
 
 
-def scrape_restaurants_by_province(province: str, wongnai_regionId: str) -> pd.DataFrame:
+def mulProcess_helper_scrape_restaurants_by_province(page_number: int, province: str, wongnai_regionId: str) -> pd.DataFrame:
 
     # res_restaurant_df = pd.DataFrame()
     res_restaurant_df = create_restaurant_df(Restaurant())
     
-    cnt_for_debug = 0
-
-    while(True):
-        if(cnt_for_debug == 1):
-            break
-        cnt_for_debug += 1
-        
-        print("scraping restaurant | province --> %s | page --> %s" % (province, cnt_for_debug))
-        cur_query_url = "https://www.wongnai.com/restaurants?categoryGroupId=9&regions=%s&page.number=%s" % (wongnai_regionId, cnt_for_debug)
-        
-        # get all name, subname, type, wongnai_url of all restaurant in current page
-        all_get_data_by_page = get_data_by_page(query_url=cur_query_url, res_restaurant_df=res_restaurant_df)
+    print("scraping restaurant | province --> %s | page --> %s" % (province, page_number))
+    cur_query_url = "https://www.wongnai.com/restaurants?categoryGroupId=9&regions=%s&page.number=%s" % (wongnai_regionId, page_number)
     
-        # use data from 'res_get_data_by_page' to retrive data of specific restaurant
-        for cur_data_by_page in all_get_data_by_page:
-            cur_restaurant = Restaurant()
-            # get 'name', 'sub_name', 'type', 'wongnai_url'
-            cur_name = cur_data_by_page[0]
-            cur_sub_name = cur_data_by_page[1]
-            cur_types = cur_data_by_page[2]
-            cur_wongnai_url = cur_data_by_page[3]
-            
-            # continue scraping data for a specific resgtaurant
-            scrape_single_restaurant(
-                link_to_restaurant = cur_wongnai_url,
-                restaurant = cur_restaurant,
-                province_th = province
-            )
-            
-            # set 'Restaurant' object properties (some of them will be set in method "scrape_restaurant")
-            cur_restaurant.set_name(cur_name)
-            cur_restaurant.set_sub_name(cur_sub_name)
-            cur_restaurant.set_restaurantType(cur_types)
-            cur_restaurant.set_wongnai_url(cur_wongnai_url)
-            
-            # create data frame represent data scrape from current restaurant card
-            cur_restaurant_df = create_restaurant_df(restaurant=cur_restaurant)
+    # get all name, subname, type, wongnai_url of all restaurant in current page
+    all_get_data_by_page = get_data_by_page(query_url=cur_query_url, res_restaurant_df=res_restaurant_df)
 
-            # concat all data frame result
-            res_restaurant_df = pd.concat([res_restaurant_df, cur_restaurant_df])
+    # use data from 'res_get_data_by_page' to retrive data of specific restaurant
+    for cur_data_by_page in all_get_data_by_page:
+        cur_restaurant = Restaurant()
+        # get 'name', 'sub_name', 'type', 'wongnai_url'
+        cur_name = cur_data_by_page[0]
+        cur_sub_name = cur_data_by_page[1]
+        cur_types = cur_data_by_page[2]
+        cur_wongnai_url = cur_data_by_page[3]
+        
+        # continue scraping data for a specific resgtaurant
+        scrape_single_restaurant(
+            link_to_restaurant = cur_wongnai_url,
+            restaurant = cur_restaurant,
+            province_th = province
+        )
+        
+        # set 'Restaurant' object properties (some of them will be set in method "scrape_restaurant")
+        cur_restaurant.set_name(cur_name)
+        cur_restaurant.set_sub_name(cur_sub_name)
+        cur_restaurant.set_restaurantType(cur_types)
+        cur_restaurant.set_wongnai_url(cur_wongnai_url)
+        
+        # create data frame represent data scrape from current restaurant card
+        cur_restaurant_df = create_restaurant_df(restaurant=cur_restaurant)
+
+        # concat all data frame result
+        res_restaurant_df = pd.concat([res_restaurant_df, cur_restaurant_df])
 
     return res_restaurant_df.iloc[1:, :].copy()
+
+
+def test_mulProcess_helper(page_number: int, province: str, wongnai_regionId: str) -> str:
+
+    # res_restaurant_df = pd.DataFrame()
+    res_restaurant_df = create_restaurant_df(Restaurant())
+    
+    print("scraping restaurant | province --> %s | page --> %s" % (province, page_number))
+    cur_query_url = "https://www.wongnai.com/restaurants?categoryGroupId=9&regions=%s&page.number=%s" % (wongnai_regionId, page_number)
+    return cur_query_url
