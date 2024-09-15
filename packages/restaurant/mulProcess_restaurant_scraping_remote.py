@@ -237,12 +237,10 @@ def scrape_location(restaurant_page_driver: webdriver, restaurant: Restaurant, p
             cur_property = cur_meta_data.get_attribute('property')
             if(cur_property):
                 if(cur_property == lat_property):
-                    print(cur_meta_data.get_attribute('content'))
                     lat = float(cur_meta_data.get_attribute('content'))
                     cnt_lat_long += 1
                     continue
                 elif(cur_property == long_property):
-                    print(cur_meta_data.get_attribute('content'))
                     long = float(cur_meta_data.get_attribute('content'))
                     cnt_lat_long += 1
                     continue
@@ -260,6 +258,13 @@ def scrape_location(restaurant_page_driver: webdriver, restaurant: Restaurant, p
     is_retry = True
     options = webdriver.ChromeOptions()
     options.add_argument("start-maximized")
+    # this will disable image loading
+    # options.add_argument('--blink-settings=imagesEnabled=false')
+    # or alternatively we can set direct preference:
+    options.add_experimental_option(
+        "prefs", {"profile.managed_default_content_settings.images": 2}
+    )
+
     while(is_retry):
         # create remote web driver for google map
         sbr_connection = ChromiumRemoteConnection(os.environ["SBR_WS_ENDPOINT"], 'goog', 'chrome')
@@ -363,6 +368,12 @@ def scrape_single_restaurant(link_to_restaurant: str, restaurant: Restaurant, pr
 
     options = webdriver.ChromeOptions()
     options.add_argument("start-maximized")
+    # this will disable image loading
+    # options.add_argument('--blink-settings=imagesEnabled=false')
+    # or alternatively we can set direct preference:
+    options.add_experimental_option(
+        "prefs", {"profile.managed_default_content_settings.images": 2}
+    )
 
     is_retry = True
 
@@ -374,15 +385,12 @@ def scrape_single_restaurant(link_to_restaurant: str, restaurant: Restaurant, pr
         print("for restaurant : ", link_to_restaurant)
         restaurant_page_driver.get(link_to_restaurant)
 
-        # 
         try:
-            # print("debug name section")
-            # WebDriverWait(restaurant_page_driver, 10).until(EC.visibility_of_element_located((By.CLASS_NAME, 'jxBSdL')))
-            print("debug map, phone text section")
-            WebDriverWait(restaurant_page_driver, 10).until(EC.visibility_of_element_located((By.CLASS_NAME, 'jEIapA')))
-            print("debug aside section")
+            print("debug scrape_single_restaurant: map, phone text section")
+            WebDriverWait(restaurant_page_driver, 10 * 4).until(EC.visibility_of_element_located((By.CLASS_NAME, 'jEIapA')))
+            print("debug scrape_single_restaurant: aside section")
             WebDriverWait(restaurant_page_driver, 10).until(EC.visibility_of_element_located((By.CLASS_NAME, 'dUuuBs')))
-            print("debug meta data for lat/long")
+            print("debug scrape_single_restaurant: meta data for lat/long")
             WebDriverWait(restaurant_page_driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, 'meta'))) 
             
         except Exception as e:
@@ -468,12 +476,15 @@ def scrape_single_restaurant(link_to_restaurant: str, restaurant: Restaurant, pr
                 WebDriverWait(restaurant_page_driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="contentRow"]/div[2]/div/div[1]/div[2]/div/ul')))
                 container_list_facilities = restaurant_page_driver.find_element(By.XPATH, '//*[@id="contentRow"]/div[2]/div/div[1]/div[2]/div/ul')
                 is_find_container_list = True
+                print("find facilities on div[2]")
+            
             except Exception as e:
                 pass
             
             if(not is_find_container_list):
                 WebDriverWait(restaurant_page_driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="contentRow"]/div[2]/div/div[1]/div[1]/div/ul')))
                 container_list_facilities = restaurant_page_driver.find_element(By.XPATH, '//*[@id="contentRow"]/div[2]/div/div[1]/div[1]/div/ul')
+                print("find facilities on div[1]")
 
             WebDriverWait(restaurant_page_driver, 10).until(EC.visibility_of_element_located((By.TAG_NAME, 'li')))
             all_list_facilities = container_list_facilities.find_elements(By.TAG_NAME, 'li')
@@ -549,8 +560,8 @@ def scrape_single_restaurant(link_to_restaurant: str, restaurant: Restaurant, pr
         )
 
         # scrape image path
-        img_path = scrape_img(restaurant_page_driver)
-        print("cur img path -> ", img_path)
+        # img_path = scrape_img(restaurant_page_driver)
+        # print("cur img path -> ", img_path)
 
         # set some of "Restaurant" object properties
         restaurant.set_description(description)
@@ -559,7 +570,7 @@ def scrape_single_restaurant(link_to_restaurant: str, restaurant: Restaurant, pr
         restaurant.set_priceRange(priceRange)
         restaurant.set_facility(facilities)
         restaurant.set_openingHour(openingHours)
-        restaurant.set_imgPath(img_path)
+        # restaurant.set_imgPath(img_path)
         restaurant.set_rating(
             score = rating, 
             rating_count = ratingCount
@@ -584,6 +595,12 @@ def get_data_by_page(query_url: str, res_restaurant_df: pd.DataFrame) -> list[tu
 
     options = webdriver.ChromeOptions()
     options.add_argument("start-maximized")
+    # this will disable image loading
+    # options.add_argument('--blink-settings=imagesEnabled=false')
+    # or alternatively we can set direct preference:
+    options.add_experimental_option(
+        "prefs", {"profile.managed_default_content_settings.images": 2}
+    )
 
     is_retry = True
     
@@ -598,7 +615,7 @@ def get_data_by_page(query_url: str, res_restaurant_df: pd.DataFrame) -> list[tu
 
         # scroll and wait for some msec
         driver.execute_script('window.scrollBy(0, document.body.scrollHeight)')
-        time.sleep(4)
+        time.sleep(2)
 
         # print("check current page url --> ", driver.current_url)
 
@@ -607,10 +624,13 @@ def get_data_by_page(query_url: str, res_restaurant_df: pd.DataFrame) -> list[tu
         all_clickable_elements = []
         try:
             # wait for div (each restaurant section) to be present and visible
-            WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CLASS_NAME, 'bcxPmJ')))
+            print("debug get_data_by_page: restaurants by one page section")
+            WebDriverWait(driver, 10 * 4).until(EC.visibility_of_element_located((By.CLASS_NAME, 'bcxPmJ')))
             # wait for name, type element to be present and visible
-            WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CLASS_NAME, 'Dtkmv')))
-            WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CLASS_NAME, 'okmRN')))
+            print("debug get_data_by_page: name section")
+            WebDriverWait(driver, 10 * 4).until(EC.visibility_of_element_located((By.CLASS_NAME, 'Dtkmv')))
+            print("debug get_data_by_page: type section")
+            WebDriverWait(driver, 10 * 4).until(EC.visibility_of_element_located((By.CLASS_NAME, 'okmRN')))
 
             all_restaurants_card = driver.find_elements(By.CLASS_NAME, 'dibyTT')
             all_clickable_elements = driver.find_elements(By.CLASS_NAME, 'fsElrZ')
@@ -693,36 +713,40 @@ def mulProcess_helper_scrape_restaurants_by_province(page_number: int, province:
     print("scraping restaurant | province --> %s | page --> %s" % (province, page_number))
     cur_query_url = "https://www.wongnai.com/restaurants?categoryGroupId=9&regions=%s&page.number=%s" % (wongnai_regionId, page_number)
     
-    # get all name, subname, type, wongnai_url of all restaurant in current page
-    all_get_data_by_page = get_data_by_page(query_url=cur_query_url, res_restaurant_df=res_restaurant_df)
+    try:
+        # get all name, subname, type, wongnai_url of all restaurant in current page
+        all_get_data_by_page = get_data_by_page(query_url=cur_query_url, res_restaurant_df=res_restaurant_df)
+    
+        # use data from 'res_get_data_by_page' to retrive data of specific restaurant
+        for cur_data_by_page in all_get_data_by_page:
+            cur_restaurant = Restaurant()
+            # get 'name', 'sub_name', 'type', 'wongnai_url'
+            cur_name = cur_data_by_page[0]
+            cur_sub_name = cur_data_by_page[1]
+            cur_types = cur_data_by_page[2]
+            cur_wongnai_url = cur_data_by_page[3]
+            
+            # continue scraping data for a specific resgtaurant
+            scrape_single_restaurant(
+                link_to_restaurant = cur_wongnai_url,
+                restaurant = cur_restaurant,
+                province_th = province
+            )
+            
+            # set 'Restaurant' object properties (some of them will be set in method "scrape_restaurant")
+            cur_restaurant.set_name(cur_name)
+            cur_restaurant.set_sub_name(cur_sub_name)
+            cur_restaurant.set_restaurantType(cur_types)
+            cur_restaurant.set_wongnai_url(cur_wongnai_url)
+            
+            # create data frame represent data scrape from current restaurant card
+            cur_restaurant_df = create_restaurant_df(restaurant=cur_restaurant)
 
-    # use data from 'res_get_data_by_page' to retrive data of specific restaurant
-    for cur_data_by_page in all_get_data_by_page:
-        cur_restaurant = Restaurant()
-        # get 'name', 'sub_name', 'type', 'wongnai_url'
-        cur_name = cur_data_by_page[0]
-        cur_sub_name = cur_data_by_page[1]
-        cur_types = cur_data_by_page[2]
-        cur_wongnai_url = cur_data_by_page[3]
-        
-        # continue scraping data for a specific resgtaurant
-        scrape_single_restaurant(
-            link_to_restaurant = cur_wongnai_url,
-            restaurant = cur_restaurant,
-            province_th = province
-        )
-        
-        # set 'Restaurant' object properties (some of them will be set in method "scrape_restaurant")
-        cur_restaurant.set_name(cur_name)
-        cur_restaurant.set_sub_name(cur_sub_name)
-        cur_restaurant.set_restaurantType(cur_types)
-        cur_restaurant.set_wongnai_url(cur_wongnai_url)
-        
-        # create data frame represent data scrape from current restaurant card
-        cur_restaurant_df = create_restaurant_df(restaurant=cur_restaurant)
-
-        # concat all data frame result
-        res_restaurant_df = pd.concat([res_restaurant_df, cur_restaurant_df])
+            # concat all data frame result
+            res_restaurant_df = pd.concat([res_restaurant_df, cur_restaurant_df])
+    
+    except Exception as e:
+        pass
 
     return res_restaurant_df.iloc[1:, :].copy()
 
