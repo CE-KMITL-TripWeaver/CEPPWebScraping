@@ -237,10 +237,12 @@ def scrape_location(restaurant_page_driver: webdriver, restaurant: Restaurant, p
             cur_property = cur_meta_data.get_attribute('property')
             if(cur_property):
                 if(cur_property == lat_property):
+                    print(cur_meta_data.get_attribute('content'))
                     lat = float(cur_meta_data.get_attribute('content'))
                     cnt_lat_long += 1
                     continue
                 elif(cur_property == long_property):
+                    print(cur_meta_data.get_attribute('content'))
                     long = float(cur_meta_data.get_attribute('content'))
                     cnt_lat_long += 1
                     continue
@@ -264,104 +266,107 @@ def scrape_location(restaurant_page_driver: webdriver, restaurant: Restaurant, p
     options.add_experimental_option(
         "prefs", {"profile.managed_default_content_settings.images": 2}
     )
+    try:
+        while(is_retry):
+            # create remote web driver for google map
+            sbr_connection = ChromiumRemoteConnection(os.environ["SBR_WS_ENDPOINT"], 'goog', 'chrome')
+            print("Connect remote browser to scrape Google Map...")
 
-    while(is_retry):
-        # create remote web driver for google map
-        sbr_connection = ChromiumRemoteConnection(os.environ["SBR_WS_ENDPOINT"], 'goog', 'chrome')
-        print("Connect remote browser to scrape Google Map...")
+            possible_addressGoogleMap_elements = []        
+            try:
+                google_map_driver = webdriver.Remote(command_executor=sbr_connection, options=options)
+                
+                google_map_query = "https://www.google.com/maps/search/?api=1&query=%s,%s" % (lat, long)
+                google_map_driver.get(google_map_query)
+                WebDriverWait(google_map_driver, 10).until(EC.visibility_of_element_located((By.CLASS_NAME, 'DkEaL')))
+                possible_addressGoogleMap_elements = google_map_driver.find_elements(By.CLASS_NAME, 'DkEaL')
 
-        possible_addressGoogleMap_elements = []        
-        try:
-            google_map_driver = webdriver.Remote(command_executor=sbr_connection, options=options)
+            except Exception as e:
+                print("retry  scrape Google Map..")
+                google_map_driver.close()
+                continue
+
+            # if found some wiered place that doesn't even have its address
+            # skip this case for now...
+            if(not len(possible_addressGoogleMap_elements)):
+                return
+
+            subStrDistrict = "อำเภอ"
+            subStrSubDistrict = "ตำบล"
+
+            if province_th == "กรุงเทพมหานคร":
+                subStrDistrict = "เขต"
+                subStrSubDistrict = "แขวง"
+
+            district = 0
+            subDirstrict = 0
+
+            # find location
+            useData = None
+            for cur_element in possible_addressGoogleMap_elements:
+                if province_th in cur_element.text and cur_element.text.find(subStrDistrict) != -1:
+                    useData = cur_element.text.replace(",","").replace("เเ","แ")
+                    break
             
-            google_map_query = "https://www.google.com/maps/search/?api=1&query=%s,%s" % (lat, long)
-            google_map_driver.get(google_map_query)
-            WebDriverWait(google_map_driver, 10).until(EC.visibility_of_element_located((By.CLASS_NAME, 'DkEaL')))
-            possible_addressGoogleMap_elements = google_map_driver.find_elements(By.CLASS_NAME, 'DkEaL')
+            if(useData != None):
+                # print("Full Address :",useData)
+                # another brute force way in case of province 'กรุงเทพหมานคร' not have word 'แขวง' in address
+                if(province_th == 'กรุงเทพมหานคร' and useData.find(subStrSubDistrict) == -1):
+                    subAddress_split = useData.split(' ')
+                    cur_province_Idx = subAddress_split.index(province_th)
+                    district = subAddress_split[cur_province_Idx - 1].replace("เขต","")
+                    subDistrict = subAddress_split[cur_province_Idx - 2].replace("แขวง","")
 
-        except Exception as e:
-            print("retry  scrape Google Map..")
+                else:
+                    start_address_index = useData.find(subStrSubDistrict)
+                    subAddress = useData[start_address_index:]
+                    district = subAddress[subAddress.find(subStrDistrict)+len(subStrDistrict):subAddress.find(province_th)].replace(" ","")               
+                    subDistrict = subAddress[subAddress.find(subStrSubDistrict)+len(subStrSubDistrict):subAddress.find(subStrDistrict)].replace(" ","")
+
+                if district == "เมือง":
+                    district = district+province_th
+
+                # filter row to find 'ISO_3166_code', 'zip_code', 'geo_code'
+                geo_code_df = pd.read_csv(fh.PATH_TO_GEOCODE)
+                filtered_rows = geo_code_df[
+                    (geo_code_df['province_th'] == province_th) & (geo_code_df['district_th'] == district) & (geo_code_df['subDistrict_th'] == subDistrict)
+                ]
+                filtered_rows.reset_index(inplace=True, drop=True)
+                
+                if not filtered_rows.empty:
+                    print("province :",filtered_rows.loc[0, 'ISO_3166_code'], province_th)
+                    print("District :",filtered_rows.loc[0, 'zip_code'], district)
+                    print("SubDistrict :",filtered_rows.loc[0, 'geo_code'], subDistrict)
+
+                    restaurant.set_location(
+                        address = address_wongnai if len(address_wongnai) else useData,
+                        province = province_th,
+                        district = district,
+                        sub_district = subDistrict,
+                        province_code = filtered_rows.loc[0, 'ISO_3166_code'],
+                        district_code = filtered_rows.loc[0, 'zip_code'],
+                        sub_district_code = filtered_rows.loc[0, 'geo_code']
+                    )
+                else:
+                    print("province :", province_th)
+                    print("District :", district)
+                    print("SubDistrict :", subDistrict)
+
+                    restaurant.set_location(
+                        address = address_wongnai if len(address_wongnai) else useData,
+                        province = province_th,
+                        district = district,
+                        sub_district = subDistrict,
+                        iso_code = 0,
+                        zip_code = 0,
+                        geo_code = 0
+                    )
+
+            is_retry = False
             google_map_driver.close()
-            continue
-
-        # if found some wiered place that doesn't even have its address
-        # skip this case for now...
-        if(not len(possible_addressGoogleMap_elements)):
-            return
-
-        subStrDistrict = "อำเภอ"
-        subStrSubDistrict = "ตำบล"
-
-        if province_th == "กรุงเทพมหานคร":
-            subStrDistrict = "เขต"
-            subStrSubDistrict = "แขวง"
-
-        district = 0
-        subDirstrict = 0
-
-        # find location
-        useData = None
-        for cur_element in possible_addressGoogleMap_elements:
-            if province_th in cur_element.text and cur_element.text.find(subStrDistrict) != -1:
-                useData = cur_element.text.replace(",","").replace("เเ","แ")
-                break
-        
-        if(useData != None):
-            # print("Full Address :",useData)
-            # another brute force way in case of province 'กรุงเทพหมานคร' not have word 'แขวง' in address
-            if(province_th == 'กรุงเทพมหานคร' and useData.find(subStrSubDistrict) == -1):
-                subAddress_split = useData.split(' ')
-                cur_province_Idx = subAddress_split.index(province_th)
-                district = subAddress_split[cur_province_Idx - 1].replace("เขต","")
-                subDistrict = subAddress_split[cur_province_Idx - 2].replace("แขวง","")
-
-            else:
-                start_address_index = useData.find(subStrSubDistrict)
-                subAddress = useData[start_address_index:]
-                district = subAddress[subAddress.find(subStrDistrict)+len(subStrDistrict):subAddress.find(province_th)].replace(" ","")               
-                subDistrict = subAddress[subAddress.find(subStrSubDistrict)+len(subStrSubDistrict):subAddress.find(subStrDistrict)].replace(" ","")
-
-            if district == "เมือง":
-                district = district+province_th
-
-            # filter row to find 'ISO_3166_code', 'zip_code', 'geo_code'
-            geo_code_df = pd.read_csv(fh.PATH_TO_GEOCODE)
-            filtered_rows = geo_code_df[
-                (geo_code_df['province_th'] == province_th) & (geo_code_df['district_th'] == district) & (geo_code_df['subDistrict_th'] == subDistrict)
-            ]
-            filtered_rows.reset_index(inplace=True, drop=True)
-            
-            if not filtered_rows.empty:
-                print("province :",filtered_rows.loc[0, 'ISO_3166_code'], province_th)
-                print("District :",filtered_rows.loc[0, 'zip_code'], district)
-                print("SubDistrict :",filtered_rows.loc[0, 'geo_code'], subDistrict)
-
-                restaurant.set_location(
-                    address = address_wongnai if len(address_wongnai) else useData,
-                    province = province_th,
-                    district = district,
-                    sub_district = subDistrict,
-                    province_code = filtered_rows.loc[0, 'ISO_3166_code'],
-                    district_code = filtered_rows.loc[0, 'zip_code'],
-                    sub_district_code = filtered_rows.loc[0, 'geo_code']
-                )
-            else:
-                print("province :", province_th)
-                print("District :", district)
-                print("SubDistrict :", subDistrict)
-
-                restaurant.set_location(
-                    address = address_wongnai if len(address_wongnai) else useData,
-                    province = province_th,
-                    district = district,
-                    sub_district = subDistrict,
-                    iso_code = 0,
-                    zip_code = 0,
-                    geo_code = 0
-                )
-
-        is_retry = False
-        google_map_driver.close()
+    
+    except Exception as e:
+        print("can't scrape location data")
 
 
 def scrape_single_restaurant(link_to_restaurant: str, restaurant: Restaurant, province_th: str) -> None:
@@ -399,23 +404,23 @@ def scrape_single_restaurant(link_to_restaurant: str, restaurant: Restaurant, pr
             continue
 
         # find description
-        description = ""
-        try:
-            # example of restaurant with description: https://www.wongnai.com/restaurants/2928132aX-hisoviet-%E0%B9%84%E0%B8%AE%E0%B9%82%E0%B8%8B%E0%B9%80%E0%B8%A7%E0%B8%B5%E0%B8%A2%E0%B8%95-%E0%B8%82%E0%B9%89%E0%B8%B2%E0%B8%A7%E0%B9%80%E0%B8%9B%E0%B8%B5%E0%B8%A2%E0%B8%81%E0%B8%AB%E0%B8%99%E0%B9%89%E0%B8%B2%E0%B9%80%E0%B8%97%E0%B8%A8%E0%B8%9A%E0%B8%B2%E0%B8%A5?_st=cD0wO2I9MjkyODEzMjthZD10cnVlO3Q9MTcyNjE3NjI3NzUxNjtyaT0xWDdiNXdpcUxlbUhTRnByR1BwdmZzMnFTdkNWYm87aT0xWDcwWkdVUXZCeEgyWVdCM3owSzNSbTVxUklOVU07d3JlZj1zcjs%3D
-            try:
-                WebDriverWait(restaurant_page_driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="contentRow"]/div[1]/div[5]/p/span'))) 
-                click_read_more =  restaurant_page_driver.find_element(By.XPATH, '//*[@id="contentRow"]/div[1]/div[5]/p/span')
-                click_read_more.click()
-            except Exception as e:
-                pass
+        # description = ""
+        # try:
+        #     # example of restaurant with description: https://www.wongnai.com/restaurants/2928132aX-hisoviet-%E0%B9%84%E0%B8%AE%E0%B9%82%E0%B8%8B%E0%B9%80%E0%B8%A7%E0%B8%B5%E0%B8%A2%E0%B8%95-%E0%B8%82%E0%B9%89%E0%B8%B2%E0%B8%A7%E0%B9%80%E0%B8%9B%E0%B8%B5%E0%B8%A2%E0%B8%81%E0%B8%AB%E0%B8%99%E0%B9%89%E0%B8%B2%E0%B9%80%E0%B8%97%E0%B8%A8%E0%B8%9A%E0%B8%B2%E0%B8%A5?_st=cD0wO2I9MjkyODEzMjthZD10cnVlO3Q9MTcyNjE3NjI3NzUxNjtyaT0xWDdiNXdpcUxlbUhTRnByR1BwdmZzMnFTdkNWYm87aT0xWDcwWkdVUXZCeEgyWVdCM3owSzNSbTVxUklOVU07d3JlZj1zcjs%3D
+        #     try:
+        #         WebDriverWait(restaurant_page_driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="contentRow"]/div[1]/div[5]/p/span'))) 
+        #         click_read_more =  restaurant_page_driver.find_element(By.XPATH, '//*[@id="contentRow"]/div[1]/div[5]/p/span')
+        #         click_read_more.click()
+        #     except Exception as e:
+        #         pass
 
-            WebDriverWait(restaurant_page_driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="contentRow"]/div[1]/div[5]/p'))) 
-            description = restaurant_page_driver.find_element(By.XPATH, '//*[@id="contentRow"]/div[1]/div[5]/p').text
+        #     WebDriverWait(restaurant_page_driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="contentRow"]/div[1]/div[5]/p'))) 
+        #     description = restaurant_page_driver.find_element(By.XPATH, '//*[@id="contentRow"]/div[1]/div[5]/p').text
 
-        except Exception as e:
-            pass
+        # except Exception as e:
+        #     pass
 
-        print("description -> ", description)
+        # print("description -> ", description)
 
         # find phones
         phones = []
@@ -434,147 +439,147 @@ def scrape_single_restaurant(link_to_restaurant: str, restaurant: Restaurant, pr
 
         print("phone -> ", phones)
 
-        # find websites
-        all_website_dict = {}
-        try:
-            WebDriverWait(restaurant_page_driver, 10).until(EC.visibility_of_element_located((By.CLASS_NAME, 'kKDiaN'))) 
-            WebDriverWait(restaurant_page_driver, 10).until(EC.visibility_of_element_located((By.CLASS_NAME, 'cXFOMU'))) 
-            container_website_elements = restaurant_page_driver.find_element(By.CLASS_NAME, 'kKDiaN')
-            all_website_elements = container_website_elements.find_elements(By.CLASS_NAME, 'cXFOMU')
-            for cur_website in all_website_elements:
-                cur_website_name = cur_website.text
-                cur_website_link = cur_website.get_attribute('href')
-                all_website_dict[cur_website_name] = cur_website_link
+        # # find websites
+        # all_website_dict = {}
+        # try:
+        #     WebDriverWait(restaurant_page_driver, 10).until(EC.visibility_of_element_located((By.CLASS_NAME, 'kKDiaN'))) 
+        #     WebDriverWait(restaurant_page_driver, 10).until(EC.visibility_of_element_located((By.CLASS_NAME, 'cXFOMU'))) 
+        #     container_website_elements = restaurant_page_driver.find_element(By.CLASS_NAME, 'kKDiaN')
+        #     all_website_elements = container_website_elements.find_elements(By.CLASS_NAME, 'cXFOMU')
+        #     for cur_website in all_website_elements:
+        #         cur_website_name = cur_website.text
+        #         cur_website_link = cur_website.get_attribute('href')
+        #         all_website_dict[cur_website_name] = cur_website_link
 
-        except Exception as e:
-            print("no website ...")
+        # except Exception as e:
+        #     print("no website ...")
 
-        print(all_website_dict)
+        # print(all_website_dict)
 
-        # find price range
-        priceRange = ""
-        try:
-            WebDriverWait(restaurant_page_driver, 10).until(EC.visibility_of_element_located((By.CLASS_NAME, 'hpJBMe')))
-            possible_priceRange_elements = restaurant_page_driver.find_elements(By.CLASS_NAME, 'hpJBMe')
-            for cur_element in possible_priceRange_elements:
-                cur_text = cur_element.text
-                if("บาท" in cur_text):
-                    priceRange = cur_text.replace('(', '').replace(')', '')
-                    break
-        except Exception as e:
-            print("no price range ...")        
+        # # find price range
+        # priceRange = ""
+        # try:
+        #     WebDriverWait(restaurant_page_driver, 10).until(EC.visibility_of_element_located((By.CLASS_NAME, 'hpJBMe')))
+        #     possible_priceRange_elements = restaurant_page_driver.find_elements(By.CLASS_NAME, 'hpJBMe')
+        #     for cur_element in possible_priceRange_elements:
+        #         cur_text = cur_element.text
+        #         if("บาท" in cur_text):
+        #             priceRange = cur_text.replace('(', '').replace(')', '')
+        #             break
+        # except Exception as e:
+        #     print("no price range ...")        
         
-        print("priceRange -> ", priceRange)
+        # print("priceRange -> ", priceRange)
 
-        # find facilities
-        facilities = []
-        try:
-            # there will be diffrent XPATH for facilities section
-            container_list_facilities = None
-            is_find_container_list = False
-            try:
-                WebDriverWait(restaurant_page_driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="contentRow"]/div[2]/div/div[1]/div[2]/div/ul')))
-                container_list_facilities = restaurant_page_driver.find_element(By.XPATH, '//*[@id="contentRow"]/div[2]/div/div[1]/div[2]/div/ul')
-                is_find_container_list = True
-                print("find facilities on div[2]")
+        # # find facilities
+        # facilities = []
+        # try:
+        #     # there will be diffrent XPATH for facilities section
+        #     container_list_facilities = None
+        #     is_find_container_list = False
+        #     try:
+        #         WebDriverWait(restaurant_page_driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="contentRow"]/div[2]/div/div[1]/div[2]/div/ul')))
+        #         container_list_facilities = restaurant_page_driver.find_element(By.XPATH, '//*[@id="contentRow"]/div[2]/div/div[1]/div[2]/div/ul')
+        #         is_find_container_list = True
+        #         print("find facilities on div[2]")
+
+        #     except Exception as e:
+        #         pass
             
-            except Exception as e:
-                pass
-            
-            if(not is_find_container_list):
-                WebDriverWait(restaurant_page_driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="contentRow"]/div[2]/div/div[1]/div[1]/div/ul')))
-                container_list_facilities = restaurant_page_driver.find_element(By.XPATH, '//*[@id="contentRow"]/div[2]/div/div[1]/div[1]/div/ul')
-                print("find facilities on div[1]")
+        #     if(not is_find_container_list):
+        #         WebDriverWait(restaurant_page_driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="contentRow"]/div[2]/div/div[1]/div[1]/div/ul')))
+        #         container_list_facilities = restaurant_page_driver.find_element(By.XPATH, '//*[@id="contentRow"]/div[2]/div/div[1]/div[1]/div/ul')
+        #         print("find facilities on div[1]")
 
-            WebDriverWait(restaurant_page_driver, 10).until(EC.visibility_of_element_located((By.TAG_NAME, 'li')))
-            all_list_facilities = container_list_facilities.find_elements(By.TAG_NAME, 'li')
+        #     WebDriverWait(restaurant_page_driver, 10).until(EC.visibility_of_element_located((By.TAG_NAME, 'li')))
+        #     all_list_facilities = container_list_facilities.find_elements(By.TAG_NAME, 'li')
 
-            for cur_list_element in all_list_facilities:
-                all_span_elements = cur_list_element.find_elements(By.TAG_NAME, 'span')
-                allowed_className = "buIyWl"
-                # not_allowed_className = "McJoy"
-                for cur_span in all_span_elements:
-                    cur_class =  cur_span.get_attribute('class')
-                    is_allowed_facility_span = (allowed_className in cur_class)
+        #     for cur_list_element in all_list_facilities:
+        #         all_span_elements = cur_list_element.find_elements(By.TAG_NAME, 'span')
+        #         allowed_className = "buIyWl"
+        #         # not_allowed_className = "McJoy"
+        #         for cur_span in all_span_elements:
+        #             cur_class =  cur_span.get_attribute('class')
+        #             is_allowed_facility_span = (allowed_className in cur_class)
 
-                    # check if is facility with correct mark symbol -> if it is then continue scrape for facility
-                    if(is_allowed_facility_span):
-                        cur_text = cur_list_element.find_element(By.CLASS_NAME, 'fFYUJu').text
-                        try:
-                            cur_sub_text = cur_list_element.find_element(By.CLASS_NAME, 'gFBGSr').text
-                            cur_text = ('%s %s') % (cur_text, cur_sub_text)
-                        except Exception as e:
-                            pass
+        #             # check if is facility with correct mark symbol -> if it is then continue scrape for facility
+        #             if(is_allowed_facility_span):
+        #                 cur_text = cur_list_element.find_element(By.CLASS_NAME, 'fFYUJu').text
+        #                 try:
+        #                     cur_sub_text = cur_list_element.find_element(By.CLASS_NAME, 'gFBGSr').text
+        #                     cur_text = ('%s %s') % (cur_text, cur_sub_text)
+        #                 except Exception as e:
+        #                     pass
                         
-                        facilities.append(cur_text)
-                        break
+        #                 facilities.append(cur_text)
+        #                 break
 
-            print("cur facilities -> ", facilities)
+        #     print("cur facilities -> ", facilities)
 
-        except Exception as e:
-            print("no facilities ...")
+        # except Exception as e:
+        #     print("no facilities ...")
 
-        # find rating
-        rating = 0
-        ratingCount = 0
-        try:
-            WebDriverWait(restaurant_page_driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="contentRow"]/div[1]/div[1]/div/div[1]/div/div[1]/div[1]/div/div/div/div')))
-            WebDriverWait(restaurant_page_driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="contentRow"]/div[1]/div[1]/div/div[1]/div/div[1]/span/span[2]')))
-            rating_element = restaurant_page_driver.find_element(By.XPATH, '//*[@id="contentRow"]/div[1]/div[1]/div/div[1]/div/div[1]/div[1]/div/div/div/div')
-            ratingCount_element = restaurant_page_driver.find_element(By.XPATH, '//*[@id="contentRow"]/div[1]/div[1]/div/div[1]/div/div[1]/span/span[2]')
-            # print("check ....")
-            # print(rating_element.text)
-            # print(ratingCount_element.text)
-            rating = float(rating_element.text)
-            ratingCount = int(ratingCount_element.text.split(' ')[0][1:])
+        # # find rating
+        # rating = 0
+        # ratingCount = 0
+        # try:
+        #     WebDriverWait(restaurant_page_driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="contentRow"]/div[1]/div[1]/div/div[1]/div/div[1]/div[1]/div/div/div/div')))
+        #     WebDriverWait(restaurant_page_driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="contentRow"]/div[1]/div[1]/div/div[1]/div/div[1]/span/span[2]')))
+        #     rating_element = restaurant_page_driver.find_element(By.XPATH, '//*[@id="contentRow"]/div[1]/div[1]/div/div[1]/div/div[1]/div[1]/div/div/div/div')
+        #     ratingCount_element = restaurant_page_driver.find_element(By.XPATH, '//*[@id="contentRow"]/div[1]/div[1]/div/div[1]/div/div[1]/span/span[2]')
+        #     # print("check ....")
+        #     # print(rating_element.text)
+        #     # print(ratingCount_element.text)
+        #     rating = float(rating_element.text)
+        #     ratingCount = int(ratingCount_element.text.split(' ')[0][1:])
 
-        except Exception as e:
-            print("can't find rating and ratingCount")
+        # except Exception as e:
+        #     print("can't find rating and ratingCount")
 
-        print("rating --> ", rating)
-        print("ratingCount --> ", ratingCount)
+        # print("rating --> ", rating)
+        # print("ratingCount --> ", ratingCount)
 
-        # find openingHours
-        openingHours = {}
-        try:
-            WebDriverWait(restaurant_page_driver, 10).until(EC.visibility_of_element_located((By.CLASS_NAME, 'gdNTro')))
-            all_openingHours_element = restaurant_page_driver.find_elements(By.CLASS_NAME, 'gdNTro')
-            for cur_openingHours_element in all_openingHours_element:
-                cur_all_td_elements = cur_openingHours_element.find_elements(By.TAG_NAME, 'td')
-                cur_day = cur_all_td_elements[0].text
-                cur_time = cur_all_td_elements[1].text
-                openingHours[cur_day] = cur_time
+        # # find openingHours
+        # openingHours = {}
+        # try:
+        #     WebDriverWait(restaurant_page_driver, 10).until(EC.visibility_of_element_located((By.CLASS_NAME, 'gdNTro')))
+        #     all_openingHours_element = restaurant_page_driver.find_elements(By.CLASS_NAME, 'gdNTro')
+        #     for cur_openingHours_element in all_openingHours_element:
+        #         cur_all_td_elements = cur_openingHours_element.find_elements(By.TAG_NAME, 'td')
+        #         cur_day = cur_all_td_elements[0].text
+        #         cur_time = cur_all_td_elements[1].text
+        #         openingHours[cur_day] = cur_time
 
-        except Exception as e:
-            print("no opening hours ...")
+        # except Exception as e:
+        #     print("no opening hours ...")
 
-        openingHours = convert_openinghours(openingHours)
-        print("cur opening hours: ")
-        print(openingHours)
+        # openingHours = convert_openinghours(openingHours)
+        # print("cur opening hours: ")
+        # print(openingHours)
         
-        # scrape location
-        scrape_location(
-            restaurant_page_driver = restaurant_page_driver,
-            restaurant = restaurant,
-            province_th = province_th
-        )
+        # # scrape location
+        # scrape_location(
+        #     restaurant_page_driver = restaurant_page_driver,
+        #     restaurant = restaurant,
+        #     province_th = province_th
+        # )
 
         # scrape image path
         # img_path = scrape_img(restaurant_page_driver)
         # print("cur img path -> ", img_path)
 
         # set some of "Restaurant" object properties
-        restaurant.set_description(description)
+        # restaurant.set_description(description)
         restaurant.set_phone(phones)
-        restaurant.set_website(all_website_dict)
-        restaurant.set_priceRange(priceRange)
-        restaurant.set_facility(facilities)
-        restaurant.set_openingHour(openingHours)
+        # restaurant.set_website(all_website_dict)
+        # restaurant.set_priceRange(priceRange)
+        # restaurant.set_facility(facilities)
+        # restaurant.set_openingHour(openingHours)
         # restaurant.set_imgPath(img_path)
-        restaurant.set_rating(
-            score = rating, 
-            rating_count = ratingCount
-        )
+        # restaurant.set_rating(
+        #     score = rating, 
+        #     rating_count = ratingCount
+        # )
 
         is_retry = False
         restaurant_page_driver.close()
@@ -710,13 +715,12 @@ def mulProcess_helper_scrape_restaurants_by_province(page_number: int, province:
     # res_restaurant_df = pd.DataFrame()
     res_restaurant_df = create_restaurant_df(Restaurant())
     
-    print("scraping restaurant | province --> %s | page --> %s" % (province, page_number))
     cur_query_url = "https://www.wongnai.com/restaurants?categoryGroupId=9&regions=%s&page.number=%s" % (wongnai_regionId, page_number)
     
     try:
         # get all name, subname, type, wongnai_url of all restaurant in current page
         all_get_data_by_page = get_data_by_page(query_url=cur_query_url, res_restaurant_df=res_restaurant_df)
-    
+
         # use data from 'res_get_data_by_page' to retrive data of specific restaurant
         for cur_data_by_page in all_get_data_by_page:
             cur_restaurant = Restaurant()
