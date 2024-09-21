@@ -746,6 +746,12 @@ def get_data_by_page(query_url: str, res_restaurant_df: pd.DataFrame) -> list[tu
             seleniumwire_options=seleniumwire_options,
             options=options
         )
+
+        # just check for ip
+        print("just check for ip :")
+        driver.get("https://httpbin.io/ip")
+        print(driver.page_source)
+
         driver.get(query_url)
         # scroll and wait for some msec
         driver.execute_script('window.scrollBy(0, document.body.scrollHeight)')
