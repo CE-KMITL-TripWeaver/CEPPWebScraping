@@ -144,8 +144,8 @@ def scrape_img(restaurant_page_driver: webdriver) -> list[str]:
         
         cnt_retry = 0
 
-        cnt_proxy_port = 10000
-        max_proxy_port = 20000
+        # cnt_proxy_port = 10000
+        # max_proxy_port = 20000
 
         while(True):
             if(cnt_retry == 5):
@@ -158,13 +158,13 @@ def scrape_img(restaurant_page_driver: webdriver) -> list[str]:
             print("for: ", all_img_query)
 
             # formulate the proxy url with authentication
-            proxy_url = f"http://{os.environ['proxy_username']}:{os.environ['proxy_password']}@{os.environ['proxy_address']}:{cnt_proxy_port}"
+            proxy_url = f"http://{os.environ['proxy_username']}:{os.environ['proxy_password']}@{os.environ['proxy_address']}:{os.environ['proxy_port']}"
             
             # change the port with each new request (can use any port from 10000 to 20000). 
             # for example: in the first request 10000 port in the next request 10001 and so on.
-            cnt_proxy_port += 1
-            if(cnt_proxy_port > max_proxy_port):
-                cnt_proxy_port = 10000
+            # cnt_proxy_port += 1
+            # if(cnt_proxy_port > max_proxy_port):
+            #     cnt_proxy_port = 10000
 
             # set selenium-wire options to use the proxy
             seleniumwire_options = {
@@ -188,10 +188,11 @@ def scrape_img(restaurant_page_driver: webdriver) -> list[str]:
                 seleniumwire_options=seleniumwire_options,
                 options=options
             )
-            all_img_driver.get(all_img_query)
-            print("after get to img url --> enter scrape img flow ...")
             
             try:
+                all_img_driver.get(all_img_query)
+                print("after get to img url --> enter scrape img flow ...")
+                
                 WebDriverWait(all_img_driver, 1).until(EC.visibility_of_element_located((By.CLASS_NAME, 'brqSoI')))
                 all_img_elements = all_img_driver.find_elements(By.CLASS_NAME, 'brqSoI')
 
@@ -206,13 +207,13 @@ def scrape_img(restaurant_page_driver: webdriver) -> list[str]:
             max_img_cnt = 250
             try:
                 while(True):
-                    # check if it scroll and retrive the same amount of image for 3 time
+                    # check if it scroll and retrive the same amount of image for 2 time
                     # or amount of retrived images exceed "max_img_cnt" (may remove this condition later if you want all images)
-                    if(cnt_scroll_end == 3 or prev_len > max_img_cnt):
+                    if(cnt_scroll_end == 2 or prev_len > max_img_cnt):
                         break
-                    # scroll and wait for 2 msec
+                    # scroll and wait for 1 msec
                     all_img_driver.execute_script('window.scrollBy(0, document.body.scrollHeight)')
-                    time.sleep(2)
+                    time.sleep(1)
                     # update value for next iteration
                     all_img_elements = all_img_driver.find_elements(By.CLASS_NAME, 'brqSoI')
                     cur_len = len(all_img_elements)
@@ -302,8 +303,8 @@ def scrape_location(restaurant_page_driver: webdriver, restaurant: Restaurant, p
     # find location data 
     cnt_retry = 0
     
-    cnt_proxy_port = 10000
-    max_proxy_port = 20000
+    # cnt_proxy_port = 10000
+    # max_proxy_port = 20000
 
     # use 'lat', 'long' to find location data 
     try:
@@ -317,13 +318,13 @@ def scrape_location(restaurant_page_driver: webdriver, restaurant: Restaurant, p
             possible_addressGoogleMap_elements = []        
             try:
                 # formulate the proxy url with authentication
-                proxy_url = f"http://{os.environ['proxy_username']}:{os.environ['proxy_password']}@{os.environ['proxy_address']}:{cnt_proxy_port}"
+                proxy_url = f"http://{os.environ['proxy_username']}:{os.environ['proxy_password']}@{os.environ['proxy_address']}:{os.environ['proxy_port']}"
                 
                 # change the port with each new request (can use any port from 10000 to 20000). 
                 # for example: in the first request 10000 port in the next request 10001 and so on.
-                cnt_proxy_port += 1
-                if(cnt_proxy_port > max_proxy_port):
-                    cnt_proxy_port = 10000
+                # cnt_proxy_port += 1
+                # if(cnt_proxy_port > max_proxy_port):
+                #     cnt_proxy_port = 10000
 
                 # set selenium-wire options to use the proxy
                 seleniumwire_options = {
@@ -451,8 +452,8 @@ def scrape_single_restaurant(link_to_restaurant: str, restaurant: Restaurant, pr
 
     cnt_retry = 0
 
-    cnt_proxy_port = 10000
-    max_proxy_port = 20000    
+    # cnt_proxy_port = 10000
+    # max_proxy_port = 20000    
 
     while(True):
 
@@ -461,13 +462,13 @@ def scrape_single_restaurant(link_to_restaurant: str, restaurant: Restaurant, pr
             break
 
         # formulate the proxy url with authentication
-        proxy_url = f"http://{os.environ['proxy_username']}:{os.environ['proxy_password']}@{os.environ['proxy_address']}:{cnt_proxy_port}"
+        proxy_url = f"http://{os.environ['proxy_username']}:{os.environ['proxy_password']}@{os.environ['proxy_address']}:{os.environ['proxy_port']}"
         
         # change the port with each new request (can use any port from 10000 to 20000). 
         # for example: in the first request 10000 port in the next request 10001 and so on.
-        cnt_proxy_port += 1
-        if(cnt_proxy_port > max_proxy_port):
-            cnt_proxy_port = 10000
+        # cnt_proxy_port += 1
+        # if(cnt_proxy_port > max_proxy_port):
+        #     cnt_proxy_port = 10000
 
         # set selenium-wire options to use the proxy
         seleniumwire_options = {
@@ -492,11 +493,11 @@ def scrape_single_restaurant(link_to_restaurant: str, restaurant: Restaurant, pr
             options=options
         )
         
-        print("scrape single restaurant...")
-        print("for restaurant : ", link_to_restaurant)
-        restaurant_page_driver.get(link_to_restaurant)
-
         try:
+            print("scrape single restaurant...")
+            print("for restaurant : ", link_to_restaurant)
+            restaurant_page_driver.get(link_to_restaurant)
+
             print("debug scrape_single_restaurant: map, phone text section")
             WebDriverWait(restaurant_page_driver, 1).until(EC.visibility_of_element_located((By.CLASS_NAME, 'jEIapA')))
             print("debug scrape_single_restaurant: aside section")
@@ -706,8 +707,8 @@ def get_data_by_page(query_url: str, res_restaurant_df: pd.DataFrame) -> list[tu
     
     cnt_retry = 0
 
-    cnt_proxy_port = 10000
-    max_proxy_port = 20000
+    # cnt_proxy_port = 10000
+    # max_proxy_port = 20000
     
     while(True):
         
@@ -716,13 +717,13 @@ def get_data_by_page(query_url: str, res_restaurant_df: pd.DataFrame) -> list[tu
             break
 
         # formulate the proxy url with authentication
-        proxy_url = f"http://{os.environ['proxy_username']}:{os.environ['proxy_password']}@{os.environ['proxy_address']}:{cnt_proxy_port}"
+        proxy_url = f"http://{os.environ['proxy_username']}:{os.environ['proxy_password']}@{os.environ['proxy_address']}:{os.environ['proxy_port']}"
         
         # change the port with each new request (can use any port from 10000 to 20000). 
         # for example: in the first request 10000 port in the next request 10001 and so on.
-        cnt_proxy_port += 1
-        if(cnt_proxy_port > max_proxy_port):
-            cnt_proxy_port = 10000
+        # cnt_proxy_port += 1
+        # if(cnt_proxy_port > max_proxy_port):
+        #     cnt_proxy_port = 10000
 
         # set selenium-wire options to use the proxy
         seleniumwire_options = {
@@ -748,21 +749,20 @@ def get_data_by_page(query_url: str, res_restaurant_df: pd.DataFrame) -> list[tu
         )
 
         # just check for ip
-        print("just check for ip :")
-        driver.get("https://httpbin.io/ip")
-        print(driver.page_source)
-
-        driver.get(query_url)
-        # scroll and wait for some msec
-        driver.execute_script('window.scrollBy(0, document.body.scrollHeight)')
-        # time.sleep(2)
-
-        print("check current page url --> ", driver.current_url)
+        # print("just check for ip :")
+        # driver.get("https://httpbin.io/ip")
+        # print(driver.page_source)
 
         # find group of restaurant on the nth page
         all_restaurants_card = []
         all_clickable_elements = []
         try:
+            driver.get(query_url)
+            # scroll and wait for some msec
+            driver.execute_script('window.scrollBy(0, document.body.scrollHeight)')
+
+            print("check current page url --> ", driver.current_url)
+
             # wait for div (each restaurant section) to be present and visible
             print("debug get_data_by_page: restaurants by one page section")
             WebDriverWait(driver, 1).until(EC.visibility_of_element_located((By.CLASS_NAME, 'bcxPmJ')))
@@ -868,11 +868,11 @@ def mulProcess_helper_scrape_restaurants_by_province(page_number: int, province:
             cur_wongnai_url = cur_data_by_page[3]
             
             # continue scraping data for a specific resgtaurant
-            # scrape_single_restaurant(
-            #     link_to_restaurant = cur_wongnai_url,
-            #     restaurant = cur_restaurant,
-            #     province_th = province
-            # )
+            scrape_single_restaurant(
+                link_to_restaurant = cur_wongnai_url,
+                restaurant = cur_restaurant,
+                province_th = province
+            )
             
             # set 'Restaurant' object properties (some of them will be set in method "scrape_restaurant")
             cur_restaurant.set_name(cur_name)
