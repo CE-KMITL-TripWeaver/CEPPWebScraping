@@ -189,6 +189,7 @@ def scrape_img(restaurant_page_driver: webdriver) -> list[str]:
                 options=options
             )
             
+            # retry in case of web restrictions
             try:
                 all_img_driver.get(all_img_query)
 
@@ -198,6 +199,7 @@ def scrape_img(restaurant_page_driver: webdriver) -> list[str]:
                 cnt_retry += 1
                 continue
 
+            # if there are no images, break out of loop
             try:
                 WebDriverWait(all_img_driver, 1).until(EC.visibility_of_element_located((By.CLASS_NAME, 'brqSoI')))
                 all_img_elements = all_img_driver.find_elements(By.CLASS_NAME, 'brqSoI')
@@ -494,6 +496,7 @@ def scrape_single_restaurant(link_to_restaurant: str, restaurant: Restaurant, pr
             options=options
         )
         
+        # retry in case of web restrictions and some elements not loaded
         try:
             print("scrape single restaurant...")
             print("for restaurant : ", link_to_restaurant)
@@ -757,6 +760,8 @@ def get_data_by_page(query_url: str, res_restaurant_df: pd.DataFrame) -> list[tu
         # find group of restaurant on the nth page
         all_restaurants_card = []
         all_clickable_elements = []
+
+        # retry in case of web restrictions and some elements not loaded
         try:
             driver.get(query_url)
             # scroll and wait for some msec
