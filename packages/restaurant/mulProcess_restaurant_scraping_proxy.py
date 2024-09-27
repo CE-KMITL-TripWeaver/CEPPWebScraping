@@ -148,9 +148,9 @@ def scrape_img(restaurant_page_driver: webdriver) -> list[str]:
         # max_proxy_port = 20000
 
         while(True):
-            if(cnt_retry == 5):
-                print("max retry for scrape_img ...")
-                break
+            # if(cnt_retry == 5):
+            #     print("max retry for scrape_img ...")
+            #     break
             # seach image section of current restaurant by this query
             all_img_query = '%s/photos' % (restaurant_page_driver.current_url[:res_mark_Idx])
 
@@ -191,16 +191,21 @@ def scrape_img(restaurant_page_driver: webdriver) -> list[str]:
             
             try:
                 all_img_driver.get(all_img_query)
-                print("after get to img url --> enter scrape img flow ...")
-                
-                WebDriverWait(all_img_driver, 1).until(EC.visibility_of_element_located((By.CLASS_NAME, 'brqSoI')))
-                all_img_elements = all_img_driver.find_elements(By.CLASS_NAME, 'brqSoI')
 
             except Exception as e:
                 print("retry find img...")
                 all_img_driver.quit()
                 cnt_retry += 1
                 continue
+
+            try:
+                WebDriverWait(all_img_driver, 1).until(EC.visibility_of_element_located((By.CLASS_NAME, 'brqSoI')))
+                all_img_elements = all_img_driver.find_elements(By.CLASS_NAME, 'brqSoI')
+
+            except Exception as e:
+                print("there are no img --> break find_img ...")
+                all_img_driver.quit()
+                break
 
             prev_len = len(all_img_elements)
             cnt_scroll_end = 0
@@ -392,13 +397,11 @@ def scrape_location(restaurant_page_driver: webdriver, restaurant: Restaurant, p
                     subAddress_split = useData.split(' ')
                     cur_province_Idx = subAddress_split.index(province_th)
                     district = subAddress_split[cur_province_Idx - 1].replace("เขต","")
-                    subDistrict = subAddress_split[cur_province_Idx - 2].replace("แขวง","")
 
                 else:
-                    start_address_index = useData.find(subStrSubDistrict)
+                    start_address_index = useData.find(subStrDistrict)
                     subAddress = useData[start_address_index:]
                     district = subAddress[subAddress.find(subStrDistrict)+len(subStrDistrict):subAddress.find(province_th)].replace(" ","")               
-                    subDistrict = subAddress[subAddress.find(subStrSubDistrict)+len(subStrSubDistrict):subAddress.find(subStrDistrict)].replace(" ","")
 
                 if district == "เมือง":
                     district = district+province_th
@@ -406,37 +409,35 @@ def scrape_location(restaurant_page_driver: webdriver, restaurant: Restaurant, p
                 # filter row to find 'ISO_3166_code', 'zip_code', 'geo_code'
                 geo_code_df = pd.read_csv(fh.PATH_TO_GEOCODE)
                 filtered_rows = geo_code_df[
-                    (geo_code_df['province_th'] == province_th) & (geo_code_df['district_th'] == district) & (geo_code_df['subDistrict_th'] == subDistrict)
+                    (geo_code_df['province_th'] == province_th) & (geo_code_df['district_th'] == district)
                 ]
                 filtered_rows.reset_index(inplace=True, drop=True)
                 
                 if not filtered_rows.empty:
                     print("province :",filtered_rows.loc[0, 'ISO_3166_code'], province_th)
                     print("District :",filtered_rows.loc[0, 'zip_code'], district)
-                    print("SubDistrict :",filtered_rows.loc[0, 'geo_code'], subDistrict)
 
                     restaurant.set_location(
                         address = address_wongnai if len(address_wongnai) else useData,
                         province = province_th,
                         district = district,
-                        sub_district = subDistrict,
+                        sub_district = "",
                         province_code = filtered_rows.loc[0, 'ISO_3166_code'],
                         district_code = filtered_rows.loc[0, 'zip_code'],
-                        sub_district_code = filtered_rows.loc[0, 'geo_code']
+                        sub_district_code = 0
                     )
                 else:
                     print("province :", province_th)
                     print("District :", district)
-                    print("SubDistrict :", subDistrict)
 
                     restaurant.set_location(
                         address = address_wongnai if len(address_wongnai) else useData,
                         province = province_th,
                         district = district,
-                        sub_district = subDistrict,
-                        iso_code = 0,
-                        zip_code = 0,
-                        geo_code = 0
+                        sub_district = "",
+                        province_code = 0,
+                        district_code = 0,
+                        sub_district_code = 0
                     )
 
             
@@ -457,9 +458,9 @@ def scrape_single_restaurant(link_to_restaurant: str, restaurant: Restaurant, pr
 
     while(True):
 
-        if(cnt_retry == 10):
-            print("max retry for scrape single restaurant ...")
-            break
+        # if(cnt_retry == 10):
+        #     print("max retry for scrape single restaurant ...")
+        #     break
 
         # formulate the proxy url with authentication
         proxy_url = f"http://{os.environ['proxy_username']}:{os.environ['proxy_password']}@{os.environ['proxy_address']}:{os.environ['proxy_port']}"
@@ -712,9 +713,9 @@ def get_data_by_page(query_url: str, res_restaurant_df: pd.DataFrame) -> list[tu
     
     while(True):
         
-        if(cnt_retry == 10):
-            print("max retry for scrape data by page ...")
-            break
+        # if(cnt_retry == 10):
+        #     print("max retry for scrape data by page ...")
+        #     break
 
         # formulate the proxy url with authentication
         proxy_url = f"http://{os.environ['proxy_username']}:{os.environ['proxy_password']}@{os.environ['proxy_address']}:{os.environ['proxy_port']}"
