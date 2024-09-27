@@ -874,11 +874,11 @@ def mulProcess_helper_scrape_restaurants_by_province(page_number: int, province:
             cur_wongnai_url = cur_data_by_page[3]
             
             # continue scraping data for a specific resgtaurant
-            scrape_single_restaurant(
-                link_to_restaurant = cur_wongnai_url,
-                restaurant = cur_restaurant,
-                province_th = province
-            )
+            # scrape_single_restaurant(
+            #     link_to_restaurant = cur_wongnai_url,
+            #     restaurant = cur_restaurant,
+            #     province_th = province
+            # )
             
             # set 'Restaurant' object properties (some of them will be set in method "scrape_restaurant")
             cur_restaurant.set_name(cur_name)
