@@ -43,3 +43,8 @@ ATTRACTION_TAG_SCORE = [
         "Monument", "Zoo", "Waterpark", "Hiking", "Museum",
         "Riverside", "NightLife", "Family", "Kid", "Landmark", "Forest",
 ]
+
+
+ALL_PROVINCE_TRIPADVISOR_DATA = [
+    ('Surin', 'สุรินทร์', 'https://th.tripadvisor.com/Attractions-g2099297-Activities-c47-Surin_Province.html')
+]
