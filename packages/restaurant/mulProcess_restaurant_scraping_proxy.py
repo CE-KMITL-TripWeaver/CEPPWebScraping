@@ -144,9 +144,6 @@ def scrape_img(restaurant_page_driver: webdriver) -> list[str]:
         
         cnt_retry = 0
 
-        # cnt_proxy_port = 10000
-        # max_proxy_port = 20000
-
         while(True):
             # if(cnt_retry == 5):
             #     print("max retry for scrape_img ...")
@@ -160,12 +157,6 @@ def scrape_img(restaurant_page_driver: webdriver) -> list[str]:
             # formulate the proxy url with authentication
             proxy_url = f"http://{os.environ['proxy_username']}:{os.environ['proxy_password']}@{os.environ['proxy_address']}:{os.environ['proxy_port']}"
             
-            # change the port with each new request (can use any port from 10000 to 20000). 
-            # for example: in the first request 10000 port in the next request 10001 and so on.
-            # cnt_proxy_port += 1
-            # if(cnt_proxy_port > max_proxy_port):
-            #     cnt_proxy_port = 10000
-
             # set selenium-wire options to use the proxy
             seleniumwire_options = {
                 "proxy": {
@@ -310,9 +301,6 @@ def scrape_location(restaurant_page_driver: webdriver, restaurant: Restaurant, p
     # find location data 
     cnt_retry = 0
     
-    # cnt_proxy_port = 10000
-    # max_proxy_port = 20000
-
     # use 'lat', 'long' to find location data 
     try:
         while(True):
@@ -324,23 +312,6 @@ def scrape_location(restaurant_page_driver: webdriver, restaurant: Restaurant, p
 
             possible_addressGoogleMap_elements = []        
             try:
-                # formulate the proxy url with authentication
-                proxy_url = f"http://{os.environ['proxy_username']}:{os.environ['proxy_password']}@{os.environ['proxy_address']}:{os.environ['proxy_port']}"
-                
-                # change the port with each new request (can use any port from 10000 to 20000). 
-                # for example: in the first request 10000 port in the next request 10001 and so on.
-                # cnt_proxy_port += 1
-                # if(cnt_proxy_port > max_proxy_port):
-                #     cnt_proxy_port = 10000
-
-                # set selenium-wire options to use the proxy
-                seleniumwire_options = {
-                    "proxy": {
-                        "http": proxy_url,
-                        "https": proxy_url
-                    },
-                }
-
                 # set Chrome options to run in headless mode
                 # options = Options()
                 options = webdriver.ChromeOptions()
@@ -350,12 +321,6 @@ def scrape_location(restaurant_page_driver: webdriver, restaurant: Restaurant, p
                     "prefs", {"profile.managed_default_content_settings.images": 2}
                 )
 
-                # initialize the Chrome driver with service, selenium-wire options, and chrome options
-                # google_map_driver = webdriver.Edge(
-                #     service=Service(EdgeChromiumDriverManager().install()),
-                #     seleniumwire_options=seleniumwire_options,
-                #     options=options
-                # )
                 google_map_driver = webdriver.Chrome(options=options)
                 
                 google_map_query = "https://www.google.com/maps/search/?api=1&query=%s,%s" % (lat, long)
@@ -454,10 +419,7 @@ def scrape_location(restaurant_page_driver: webdriver, restaurant: Restaurant, p
 def scrape_single_restaurant(link_to_restaurant: str, restaurant: Restaurant, province_th: str) -> None:
 
     cnt_retry = 0
-
-    # cnt_proxy_port = 10000
-    # max_proxy_port = 20000    
-
+    
     while(True):
 
         # if(cnt_retry == 10):
@@ -467,12 +429,6 @@ def scrape_single_restaurant(link_to_restaurant: str, restaurant: Restaurant, pr
         # formulate the proxy url with authentication
         proxy_url = f"http://{os.environ['proxy_username']}:{os.environ['proxy_password']}@{os.environ['proxy_address']}:{os.environ['proxy_port']}"
         
-        # change the port with each new request (can use any port from 10000 to 20000). 
-        # for example: in the first request 10000 port in the next request 10001 and so on.
-        # cnt_proxy_port += 1
-        # if(cnt_proxy_port > max_proxy_port):
-        #     cnt_proxy_port = 10000
-
         # set selenium-wire options to use the proxy
         seleniumwire_options = {
             "proxy": {
@@ -710,9 +666,6 @@ def get_data_by_page(query_url: str, res_restaurant_df: pd.DataFrame) -> list[tu
     res_data_by_page = []
     
     cnt_retry = 0
-
-    # cnt_proxy_port = 10000
-    # max_proxy_port = 20000
     
     while(True):
         
@@ -723,12 +676,6 @@ def get_data_by_page(query_url: str, res_restaurant_df: pd.DataFrame) -> list[tu
         # formulate the proxy url with authentication
         proxy_url = f"http://{os.environ['proxy_username']}:{os.environ['proxy_password']}@{os.environ['proxy_address']}:{os.environ['proxy_port']}"
         
-        # change the port with each new request (can use any port from 10000 to 20000). 
-        # for example: in the first request 10000 port in the next request 10001 and so on.
-        # cnt_proxy_port += 1
-        # if(cnt_proxy_port > max_proxy_port):
-        #     cnt_proxy_port = 10000
-
         # set selenium-wire options to use the proxy
         seleniumwire_options = {
             "proxy": {
