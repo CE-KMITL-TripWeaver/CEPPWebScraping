@@ -20,7 +20,7 @@ class Location:
     def get_district(self) -> str:
         return self.__district
     
-    def get_subDistrict(self) -> str:
+    def get_sub_district(self) -> str:
         return self.__subDistrict
     
     def get_province_code(self) -> int:
@@ -44,7 +44,7 @@ class Location:
     def set_district(self, district:str) -> None:
         self.__district = district
     
-    def set_subDistrict(self, subDistrict:str) -> None:
+    def set_sub_district(self, subDistrict:str) -> None:
         self.__subDistrict = subDistrict
     
     def set_province_code(self, province_code:int) -> None:
