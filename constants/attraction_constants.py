@@ -46,5 +46,6 @@ ATTRACTION_TAG_SCORE = [
 
 
 ALL_PROVINCE_TRIPADVISOR_DATA = [
+    ('Phuket', 'ภูเก็ต', 'https://th.tripadvisor.com/Attractions-g293920-Activities-a_allAttractions.true-Phuket.html'), 
     ('Surin', 'สุรินทร์', 'https://th.tripadvisor.com/Attractions-g2099297-Activities-c47-Surin_Province.html')
 ]

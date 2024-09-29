@@ -91,7 +91,7 @@ class Attraction:
         self.__location.set_address(address)
         self.__location.set_province(province)
         self.__location.set_district(district)
-        self.__location.set_subDistrict(sub_district)
+        self.__location.set_sub_district(sub_district)
         self.__location.set_province_code(province_code)
         self.__location.set_district_code(district_code)
         self.__location.set_sub_district_code(sub_district_code)
