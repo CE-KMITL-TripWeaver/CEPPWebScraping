@@ -97,22 +97,22 @@ class Restaurant:
     def set_description(self, description: str) -> None:
         self.__description = description
     
-    def set_latitude(self, latitude:float) -> None:
+    def set_latitude(self, latitude: float) -> None:
         self.__latitude = latitude
     
-    def set_longitude(self, longitude:float) -> None:
+    def set_longitude(self, longitude: float) -> None:
         self.__longitude = longitude
     
-    def set_imgPath(self, imgPath:list[str]) -> None:
+    def set_imgPath(self, imgPath: list[str]) -> None:
         self.__imgPath = imgPath.copy()
 
     def set_phone(self, phone: list[str]) -> None:
         self.__phone = phone.copy()    
 
-    def set_website(self, website:dict) -> None:
+    def set_website(self, website: dict) -> None:
         self.__website = website.copy()
 
-    def set_openingHour(self, openingHour:dict) -> None:
+    def set_openingHour(self, openingHour: dict) -> None:
         self.__openingHour = openingHour.copy()
     
     def set_priceRange(self, priceRange: str) -> None:
