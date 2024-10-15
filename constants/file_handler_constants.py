@@ -38,3 +38,7 @@ STORE_MERGE_RESTAURANT_SCRAPING = os.path.join(path_to_proj, 'merge_restaurant_s
 ### path for destination to store result of 'accomodation_scraping' ###
 
 STORE_ACCOMM_SCRAPING = os.path.join(path_to_proj, 'accommodation_scraping')
+
+### path for destination to store result of 'merge_restaurant_scraping' ###
+
+STORE_MERGE_ACCOMM_SCRAPING = os.path.join(path_to_proj, 'merge_accommodation_scraping')
