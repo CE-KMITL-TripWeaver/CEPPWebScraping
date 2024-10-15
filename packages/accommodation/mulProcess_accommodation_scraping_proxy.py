@@ -542,15 +542,16 @@ def scrape_single_accommodation(link_to_accommodation: str, province_th: str) ->
         tags = []
         try:
             target_xpath = [
-                '//*[@id="ABOUT_TAB"]/div[2]/div[2]/div[2]',
-                '//*[@id="ABOUT_TAB"]/div[2]/div[2]/div[5]',
-                '//*[@id="ABOUT_TAB"]/div[2]/div[2]/div[8]'
+                '//*[@id="ABOUT_TAB"]/div[2]/div[2]/div[2]', # //*[@id="ABOUT_TAB"]/div[2]/div[2]/div[2]
+                '//*[@id="ABOUT_TAB"]/div[2]/div[2]/div[5]', # //*[@id="ABOUT_TAB"]/div[2]/div[2]/div[5]
+                '//*[@id="ABOUT_TAB"]/div[2]/div[2]/div[8]'  # //*[@id="ABOUT_TAB"]/div[2]/div[2]/div[8]
             ]
             Idx_target = 0
             Idx_topic = 0
             
             WebDriverWait(accommodation_page_driver, 1).until(EC.visibility_of_element_located((By.CLASS_NAME, 'vqEpQ')))
             all_topic_elements = accommodation_page_driver.find_elements(By.CLASS_NAME, 'vqEpQ')
+            fixed_topic = ["สิ่งอำนวยความสะดวกของสถานที่ให้บริการ", "สิ่งอำนวยความสะดวกในห้องพัก", "ประเภทห้องพัก"]
 
             while(Idx_target < len(target_xpath)):
                 try:
@@ -559,6 +560,11 @@ def scrape_single_accommodation(link_to_accommodation: str, province_th: str) ->
 
                     cur_topic = all_topic_elements[Idx_topic].text
                     print("cur_topic --> ", cur_topic)
+
+                    if(cur_topic not in fixed_topic):
+                        Idx_topic += 1
+                        continue
+
                     if(cur_topic == "สิ่งอำนวยความสะดวกของสถานที่ให้บริการ" or cur_topic == "สิ่งอำนวยความสะดวกในห้องพัก"):
                         all_facility_elements = target_container.find_elements(By.CLASS_NAME, 'gFttI')
                         for cur_facility_element in all_facility_elements:
@@ -736,18 +742,18 @@ def get_all_url_by_page(query_url: str, page: int) -> list[str]:
 
             # if current page is 1, find button "ดูทั้งหมด"(if it exist) --> click to load more accommodation card elements
             # assume that page 1 of target province (phuket for now) not less than 10
-            if(page == 1 and len(all_accommodations_card) <= 10):
-                print("b 0.5")
-                print("debug get_all_url_by_page: get click more btn for page 1")
-                WebDriverWait(driver, 1).until(EC.visibility_of_element_located((By.CLASS_NAME, 'sOtnj')))
-                click_more_btn = driver.find_element(By.CLASS_NAME, 'sOtnj')
-                click_more_btn.click()
+            # if(page == 1 and len(all_accommodations_card) <= 10):
+            #     print("b 0.5")
+            #     print("debug get_all_url_by_page: get click more btn for page 1")
+            #     WebDriverWait(driver, 1).until(EC.visibility_of_element_located((By.CLASS_NAME, 'sOtnj')))
+            #     click_more_btn = driver.find_element(By.CLASS_NAME, 'sOtnj')
+            #     click_more_btn.click()
 
-                # wait for div (each accommodation section) to be present and visible
-                print("b1 part 2")
-                print("debug get_all_url_by_page: accommodation by one page section")
-                WebDriverWait(driver, 1).until(EC.visibility_of_element_located((By.CLASS_NAME, 'jhsNf')))
-                all_accommodations_card = driver.find_elements(By.CLASS_NAME, 'jhsNf')
+            #     # wait for div (each accommodation section) to be present and visible
+            #     print("b1 part 2")
+            #     print("debug get_all_url_by_page: accommodation by one page section")
+            #     WebDriverWait(driver, 1).until(EC.visibility_of_element_located((By.CLASS_NAME, 'jhsNf')))
+            #     all_accommodations_card = driver.find_elements(By.CLASS_NAME, 'jhsNf')
 
             # check if all accomodation card can get tag a and its attribute for url
             print("b2")
@@ -780,24 +786,29 @@ def mulProcess_helper_scrape_accommodations_by_province(page: int, province_url:
 
     all_url_by_page = get_all_url_by_page(query_url = province_url, page = page)
 
-    # use data from 'res_get_data_by_page' to retrive data of specific accommodation
-    for cur_accommodation_url in all_url_by_page:
-        # just use to limit amount of place --> will be removed 
-        if(cnt_for_debug == 1):
-            break
+    try:
+        # use data from 'res_get_data_by_page' to retrive data of specific accommodation
+        for cur_accommodation_url in all_url_by_page:
+            # just use to limit amount of place --> will be removed 
+            if(cnt_for_debug == 5):
+                break
 
-        # continue scraping data for a specific resgtaurant
-        cur_accommodation = scrape_single_accommodation(
-            link_to_accommodation = cur_accommodation_url,
-            province_th = province
-        )
+            # continue scraping data for a specific resgtaurant
+            cur_accommodation = scrape_single_accommodation(
+                link_to_accommodation = cur_accommodation_url,
+                province_th = province
+            )
 
-        cnt_for_debug += 1
+            cnt_for_debug += 1
 
-        # create data frame represent data scrape from current accommodation card
-        cur_accommodation_df = create_accommodation_df(accommodation=cur_accommodation)
+            # create data frame represent data scrape from current accommodation card
+            cur_accommodation_df = create_accommodation_df(accommodation=cur_accommodation)
 
-        # concat all data frame result
-        res_accommodation_df = pd.concat([res_accommodation_df, cur_accommodation_df])
-    
+            # concat all data frame result
+            res_accommodation_df = pd.concat([res_accommodation_df, cur_accommodation_df])
+
+    except Exception as e:
+        pass
+
+        
     return res_accommodation_df.iloc[1:, :].copy()
