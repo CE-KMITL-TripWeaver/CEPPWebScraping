@@ -100,6 +100,7 @@ def scrape_img(accommodation_page_driver: webdriver) -> list[str]:
     try:
         print("p2")
         # click_img_btn = accommodation_page_driver.find_element(By.CLASS_NAME, 'QXsnf')
+        WebDriverWait(accommodation_page_driver, 2).until(EC.visibility_of_element_located((By.CLASS_NAME, 'GuzzA')))
         click_img_btn = accommodation_page_driver.find_element(By.CLASS_NAME, 'GuzzA')
         print("p3")
         
@@ -352,8 +353,8 @@ def scrape_location_latlong_types(accommodation_page_driver: webdriver, link_to_
       
         # find lat/long
         try:
-            WebDriverWait(adjust_page_driver, 2).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="lithium-root"]/main/div[2]/div[3]/div[1]/div/div[2]/div[2]/div/div/div[2]/div/div/div[3]/div[1]/div/div[2]/div/div/div/span')))
-            WebDriverWait(adjust_page_driver, 2).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="lithium-root"]/main/div[2]/div[3]/div[1]/div/div[2]/div[2]/div/div/div[2]/div/div/div[3]/div[2]/div/div[2]/div/div/div/span')))
+            WebDriverWait(adjust_page_driver, 1).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="lithium-root"]/main/div[2]/div[3]/div[1]/div/div[2]/div[2]/div/div/div[2]/div/div/div[3]/div[1]/div/div[2]/div/div/div/span')))
+            WebDriverWait(adjust_page_driver, 1).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="lithium-root"]/main/div[2]/div[3]/div[1]/div/div[2]/div[2]/div/div/div[2]/div/div/div[3]/div[2]/div/div[2]/div/div/div/span')))
     
             lat_input_container = adjust_page_driver.find_element(By.XPATH, '//*[@id="lithium-root"]/main/div[2]/div[3]/div[1]/div/div[2]/div[2]/div/div/div[2]/div/div/div[3]/div[1]/div/div[2]/div/div/div/span')
             lat_input_element = lat_input_container.find_element(By.TAG_NAME, 'input')
@@ -450,15 +451,15 @@ def scrape_single_accommodation(link_to_accommodation: str, province_th: str) ->
             # accommodation_page_driver.add_cookie()
 
             print("debug scrape_single_accommodation: top info component section")
-            # WebDriverWait(accommodation_page_driver, 2).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="lithium-root"]/main/span/div[4]/div/div[1]/div[3]/div')))
-            # top_info_container = accommodation_page_driver.find_element(By.XPATH, '//*[@id="lithium-root"]/main/span/div[4]/div/div[1]/div[3]/div')
+            WebDriverWait(accommodation_page_driver, 1).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="lithium-root"]/main/span/div[4]/div/div[1]/div[3]/div')))
+            top_info_container = accommodation_page_driver.find_element(By.XPATH, '//*[@id="lithium-root"]/main/span/div[4]/div/div[1]/div[3]/div')
 
             print("debug scrape_single_accommodation: bottom info component section")
-            WebDriverWait(accommodation_page_driver, 2).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="ABOUT_TAB"]')))
+            WebDriverWait(accommodation_page_driver, 1).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="ABOUT_TAB"]')))
             bottom_info_container = accommodation_page_driver.find_element(By.XPATH, '//*[@id="ABOUT_TAB"]')
 
             print("debug scrape_single_attraction: common component section")
-            WebDriverWait(accommodation_page_driver, 2).until(EC.visibility_of_element_located((By.CLASS_NAME, 'IDaDx')))
+            WebDriverWait(accommodation_page_driver, 1).until(EC.visibility_of_element_located((By.CLASS_NAME, 'IDaDx')))
 
         except Exception as e:
             print("retry single accommodation case 1...")

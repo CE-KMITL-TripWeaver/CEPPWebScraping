@@ -8,6 +8,7 @@ from packages.rating.Rating import *
 class Attraction:
     def __init__(self) -> None:
         self.__name = ''
+        self.__type = []
         self.__description = ''
         self.__latitude = 0
         self.__longitude = 0
@@ -27,6 +28,9 @@ class Attraction:
     
     def get_name(self) -> str:
         return self.__name
+    
+    def get_type(self) -> list[str]:
+        return self.__type.copy()
     
     def get_description(self) -> str:
         return self.__description
@@ -63,6 +67,9 @@ class Attraction:
     def set_name(self, name:str) -> None:
         self.__name = name
     
+    def set_type(self, type:list[str]) -> None:
+        self.__type = type.copy()
+
     def set_description(self, description:str) -> None:
         self.__description = description        
     
