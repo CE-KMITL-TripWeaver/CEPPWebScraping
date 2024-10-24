@@ -41,6 +41,8 @@ class AttractionTag:
 
 
     ## define getter method
+    def get_attractionTag(self) -> dict:
+        return self.__tag_score
 
     def get_tag_score(self, key:str) -> float:
         return self.__tag_score.get(key, -1)
@@ -48,9 +50,12 @@ class AttractionTag:
     
     ## define setter method
 
+    def set_attractionTag(self, attractionTag: dict) -> None:
+        self.__tag_score = attractionTag.copy()
+
     def set_tag_score(self, key:str, val:float) -> None:
         if(self.get_tag_score(key) == -1):
             return
         self.__tag_score[key] = val
-        
-        
+    
+    

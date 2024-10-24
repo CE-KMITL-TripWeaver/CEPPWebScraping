@@ -106,3 +106,6 @@ class Attraction:
     def set_rating(self, score: float, rating_count: int) -> None:
         self.__rating.set_score(score)
         self.__rating.set_ratingCount(rating_count)    
+    
+    def set_attractionTag(self, attractionTag: dict) -> None:
+        self.__attractionTag.set_attractionTag(attractionTag)
