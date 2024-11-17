@@ -598,8 +598,8 @@ def scrape_single_attraction(link_to_attraction: str, province_th: str) -> Attra
             print("******************************************************")
             print("scrape single attraction...")
             print("for attraction : ", link_to_attraction)
-            # attraction_page_driver.get(link_to_attraction)
-            attraction_page_driver.get('https://th.tripadvisor.com/Attraction_Review-g1389361-d2433844-Reviews-Big_Buddha_Phuket-Chalong_Phuket_Town_Phuket.html')
+            attraction_page_driver.get(link_to_attraction)
+            # attraction_page_driver.get('https://th.tripadvisor.com/Attraction_Review-g1389361-d2433844-Reviews-Big_Buddha_Phuket-Chalong_Phuket_Town_Phuket.html')
 
             print("debug scrape_single_attraction: common component section")
             WebDriverWait(attraction_page_driver, 2).until(EC.visibility_of_element_located((By.CLASS_NAME, 'IDaDx')))
@@ -844,7 +844,7 @@ def get_all_url_by_page(query_url: str, page: int) -> list[str]:
     return res_url_by_page.copy()
 
 
-def mulProcess_helper_scrape_attraction_by_province(page: int, province_url: str, province: str) -> pd.DataFrame:
+def mulProcess_helper_scrape_attractions_by_province(page: int, province_url: str, province: str) -> pd.DataFrame:
     # res_attraction_df = pd.DataFrame()
     res_attraction_df = create_attraction_df(Attraction())
     
@@ -856,8 +856,8 @@ def mulProcess_helper_scrape_attraction_by_province(page: int, province_url: str
 
     # use data from 'res_get_data_by_page' to retrive data of specific attraction
     for cur_attraction_url in all_url_by_page:
-        if(cnt_for_debug == 3):
-            break
+        # if(cnt_for_debug == 3):
+        #     break
 
         # continue scraping data for a specific resgtaurant
         cur_attraction = scrape_single_attraction(
