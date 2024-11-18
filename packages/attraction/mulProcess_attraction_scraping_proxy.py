@@ -485,7 +485,28 @@ def scrape_adjust_page(link_to_adjust_page: str) -> tuple[float, float, dict, li
             print("retry adjust page...")
             continue
 
-      
+    
+        # find types
+        try:
+            WebDriverWait(adjust_page_driver, 1).until(EC.visibility_of_element_located((By.CLASS_NAME, 'ZCWaz')))
+            all_type_elements = adjust_page_driver.find_elements(By.CLASS_NAME, 'ZCWaz')
+            for cur_element in all_type_elements:
+                cur_type_text = cur_element.text
+
+                # if some keyword of non-attraction appear for current type --> not scrape this attraction
+                for cur_check_word in NOT_ATTRACTION_KEYWORD:
+                    if(cur_check_word in cur_type_text):
+                        print("in scrape_adjust_page --> found non-attraction in type")
+                        return lat, long, openingHours.copy(), types.copy()
+
+                types.append(cur_type_text)
+
+        except Exception as e:
+            print("can't find types ...")
+
+        print("types : ", types.copy())
+
+
         # find lat/long
         try:
             WebDriverWait(adjust_page_driver, 2).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="lithium-root"]/main/div[2]/div[3]/div[1]/div/div[2]/div[2]/div/div/div[2]/div/div/div[3]/div[1]/div/div[2]/div/div/div/span')))
@@ -510,7 +531,6 @@ def scrape_adjust_page(link_to_adjust_page: str) -> tuple[float, float, dict, li
             print("in scrape_adjust_page --> can't find lat/long --> 0, 0")
             return lat, long, openingHours.copy(), types.copy()
 
-
         # find openingHours
         try:
             WebDriverWait(adjust_page_driver, 1).until(EC.visibility_of_element_located((By.CLASS_NAME, 'dNAjp')))
@@ -529,21 +549,7 @@ def scrape_adjust_page(link_to_adjust_page: str) -> tuple[float, float, dict, li
 
         print("openingHours : ", openingHours.copy())
 
-
-        # find types
-        try:
-            WebDriverWait(adjust_page_driver, 1).until(EC.visibility_of_element_located((By.CLASS_NAME, 'ZCWaz')))
-            all_type_elements = adjust_page_driver.find_elements(By.CLASS_NAME, 'ZCWaz')
-            for cur_element in all_type_elements:
-                cur_type_text = cur_element.text
-                types.append(cur_type_text)
-
-        except Exception as e:
-            print("can't find types ...")
-
-        print("types : ", types.copy())
-        
-
+       
         adjust_page_driver.quit()
         break
 
@@ -821,8 +827,8 @@ def get_all_url_by_page(query_url: str, page: int) -> list[str]:
                
                 # check if cuurent card is for attraction ?
                 is_attraction_keyword = True
-                not_attraction_keyword = ['ทัวร์', 'ทริป', "สปา", "กิจกรรมทางวัฒนธรรม", 'ชั้นเรียน', 'รถรับส่ง', 'อุปกรณ์ให้เช่า', 'ร้านขายของ', 'นั่งเรือเที่ยว']
-                for cur_check_word in not_attraction_keyword:
+                # not_attraction_keyword = ['ทัวร์', 'ทริป', "สปา", "กิจกรรมทางวัฒนธรรม", 'ชั้นเรียน', 'รถรับส่ง', 'อุปกรณ์ให้เช่า', 'ร้านขายของ', 'นั่งเรือเที่ยว']
+                for cur_check_word in NOT_ATTRACTION_KEYWORD:
                     if(cur_check_word in check_text):
                         is_attraction_keyword = False
                         break

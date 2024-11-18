@@ -48,3 +48,7 @@ ATTRACTION_TAG_SCORE = [
 ALL_PROVINCE_TRIPADVISOR_DATA = [
     ('Phuket', 'ภูเก็ต', 'https://th.tripadvisor.com/Attractions-g293920-Activities-a_allAttractions.true-Phuket.html'), 
 ]
+
+NOT_ATTRACTION_KEYWORD = [
+    'ทัวร์', 'ทริป', 'สปา', 'รถรับส่ง', 'เช่า', 'ร้านขายของ', 'ขนส่ง', 'กิจกรรมทางวัฒนธรรม', 'ชั้นเรียน', 'นั่งเรือเที่ยว'
+]
