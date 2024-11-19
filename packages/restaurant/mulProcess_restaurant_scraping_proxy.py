@@ -64,7 +64,7 @@ def create_restaurant_df(restaurant: Restaurant) -> pd.DataFrame:
         'address' : [restaurant.get_location().get_address()],
         'province' : [restaurant.get_location().get_province()],
         'district' : [restaurant.get_location().get_district()],
-        'subDistrict' : [restaurant.get_location().get_subDistrict()],
+        'subDistrict' : [restaurant.get_location().get_sub_district()],
         'province_code' : [restaurant.get_location().get_province_code()],
         'district_code' : [restaurant.get_location().get_district_code()],
         'sub_district_code' : [restaurant.get_location().get_sub_district_code()],
@@ -145,9 +145,9 @@ def scrape_img(restaurant_page_driver: webdriver) -> list[str]:
         cnt_retry = 0
 
         while(True):
-            # if(cnt_retry == 5):
-            #     print("max retry for scrape_img ...")
-            #     break
+            if(cnt_retry == 3):
+                print("max retry for scrape_img ...")
+                break
             # seach image section of current restaurant by this query
             all_img_query = '%s/photos' % (restaurant_page_driver.current_url[:res_mark_Idx])
 
@@ -202,7 +202,7 @@ def scrape_img(restaurant_page_driver: webdriver) -> list[str]:
 
             prev_len = len(all_img_elements)
             cnt_scroll_end = 0
-            max_img_cnt = 250
+            max_img_cnt = 50
             try:
                 while(True):
                     # check if it scroll and retrive the same amount of image for 2 time
@@ -803,7 +803,9 @@ def mulProcess_helper_scrape_restaurants_by_province(page_number: int, province:
 
     # res_restaurant_df = pd.DataFrame()
     res_restaurant_df = create_restaurant_df(Restaurant())
-    
+
+    cnt_for_debug = 0
+
     print("scraping restaurant | province --> %s | page --> %s" % (province, page_number))
     cur_query_url = "https://www.wongnai.com/restaurants?categoryGroupId=9&regions=%s&page.number=%s" % (wongnai_regionId, page_number)
     
@@ -813,6 +815,10 @@ def mulProcess_helper_scrape_restaurants_by_province(page_number: int, province:
         
         # use data from 'res_get_data_by_page' to retrive data of specific restaurant
         for cur_data_by_page in all_get_data_by_page:
+            # just use to limit amount of place --> will be removed 
+            if(cnt_for_debug == 3):
+                break
+
             cur_restaurant = Restaurant()
             # get 'name', 'sub_name', 'type', 'wongnai_url'
             cur_name = cur_data_by_page[0]
@@ -827,6 +833,8 @@ def mulProcess_helper_scrape_restaurants_by_province(page_number: int, province:
                 province_th = province
             )
             
+            cnt_for_debug += 1
+
             # set 'Restaurant' object properties (some of them will be set in method "scrape_restaurant")
             cur_restaurant.set_name(cur_name)
             cur_restaurant.set_sub_name(cur_sub_name)

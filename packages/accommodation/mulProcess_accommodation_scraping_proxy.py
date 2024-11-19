@@ -118,7 +118,7 @@ def scrape_img(accommodation_page_driver: webdriver) -> list[str]:
         cnt_retry = 0
         print("p7")
         while(not is_end_scrape_img):
-            if(cnt_retry == 20):
+            if(cnt_retry == 10):
                 print("max retry for scrape image...")
                 break
             
@@ -405,9 +405,9 @@ def scrape_single_accommodation(link_to_accommodation: str, province_th: str) ->
     cnt_retry = 0
     
     while(True):
-        # if(cnt_retry == 10):
-        #     print("max retry for scrape single accommodation ...")
-        #     break
+        if(cnt_retry == 10):
+            print("max retry for scrape single accommodation ...")
+            break
 
         # formulate the proxy url with authentication
         proxy_url = f"http://{os.environ['proxy_username']}:{os.environ['proxy_password']}@{os.environ['proxy_address']}:{os.environ['proxy_port']}"
@@ -791,8 +791,8 @@ def mulProcess_helper_scrape_accommodations_by_province(page: int, province_url:
         # use data from 'res_get_data_by_page' to retrive data of specific accommodation
         for cur_accommodation_url in all_url_by_page:
             # just use to limit amount of place --> will be removed 
-            if(cnt_for_debug == 5):
-                break
+            # if(cnt_for_debug == 3):
+            #     break
 
             # continue scraping data for a specific resgtaurant
             cur_accommodation = scrape_single_accommodation(
