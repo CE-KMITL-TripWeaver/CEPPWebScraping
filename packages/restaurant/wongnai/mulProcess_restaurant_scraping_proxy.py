@@ -170,7 +170,13 @@ def scrape_img(restaurant_page_driver: webdriver) -> list[str]:
             options.add_argument("start-maximized")
             # options.add_argument("--headless=new")
             options.add_experimental_option(
-                "prefs", {"profile.managed_default_content_settings.images": 2}
+                "prefs", 
+                {
+                    "profile.managed_default_content_settings.images": 2, # Disable image
+                    # "profile.default_content_setting_values.cookies": 2,  # Block all cookies
+                    "profile.default_content_settings.popups": 0,         # Disable popups
+                    # "profile.managed_default_content_settings.cookies": 2  # Disable third-party cookies
+                }
             )
 
             # initialize the Chrome driver with service, selenium-wire options, and chrome options
@@ -422,9 +428,9 @@ def scrape_single_restaurant(link_to_restaurant: str, restaurant: Restaurant, pr
     
     while(True):
 
-        # if(cnt_retry == 10):
-        #     print("max retry for scrape single restaurant ...")
-        #     break
+        if(cnt_retry == 3):
+            print("max retry for scrape single restaurant ...")
+            break
 
         # formulate the proxy url with authentication
         proxy_url = f"http://{os.environ['proxy_username']}:{os.environ['proxy_password']}@{os.environ['proxy_address']}:{os.environ['proxy_port']}"
@@ -442,7 +448,13 @@ def scrape_single_restaurant(link_to_restaurant: str, restaurant: Restaurant, pr
         options.add_argument("start-maximized")
         # options.add_argument("--headless=new")
         options.add_experimental_option(
-            "prefs", {"profile.managed_default_content_settings.images": 2}
+            "prefs", 
+            {
+                "profile.managed_default_content_settings.images": 2, # Disable image
+                # "profile.default_content_setting_values.cookies": 2,  # Block all cookies
+                "profile.default_content_settings.popups": 0,         # Disable popups
+                # "profile.managed_default_content_settings.cookies": 2  # Disable third-party cookies
+            }
         )
 
         # initialize the Chrome driver with service, selenium-wire options, and chrome options
@@ -631,8 +643,8 @@ def scrape_single_restaurant(link_to_restaurant: str, restaurant: Restaurant, pr
         )
 
         # scrape image path
-        img_path = scrape_img(restaurant_page_driver)
-        print("cur img path -> ", img_path)
+        # img_path = scrape_img(restaurant_page_driver)
+        # print("cur img path -> ", img_path)
 
         # set some of "Restaurant" object properties
         restaurant.set_description(description)
@@ -641,7 +653,7 @@ def scrape_single_restaurant(link_to_restaurant: str, restaurant: Restaurant, pr
         restaurant.set_priceRange(priceRange)
         restaurant.set_facility(facilities)
         restaurant.set_openingHour(openingHours)
-        restaurant.set_imgPath(img_path)
+        # restaurant.set_imgPath(img_path)
         restaurant.set_rating(
             score = rating, 
             rating_count = ratingCount
@@ -669,9 +681,9 @@ def get_data_by_page(query_url: str, res_restaurant_df: pd.DataFrame) -> list[tu
     
     while(True):
         
-        # if(cnt_retry == 10):
-        #     print("max retry for scrape data by page ...")
-        #     break
+        if(cnt_retry == 3):
+            print("max retry for scrape data by page ...")
+            break
 
         # formulate the proxy url with authentication
         proxy_url = f"http://{os.environ['proxy_username']}:{os.environ['proxy_password']}@{os.environ['proxy_address']}:{os.environ['proxy_port']}"
@@ -689,7 +701,13 @@ def get_data_by_page(query_url: str, res_restaurant_df: pd.DataFrame) -> list[tu
         options.add_argument("start-maximized")
         # options.add_argument("--headless=new")
         options.add_experimental_option(
-            "prefs", {"profile.managed_default_content_settings.images": 2}
+            "prefs", 
+            {
+                "profile.managed_default_content_settings.images": 2, # Disable image
+                # "profile.default_content_setting_values.cookies": 2,  # Block all cookies
+                "profile.default_content_settings.popups": 0,         # Disable popups
+                # "profile.managed_default_content_settings.cookies": 2  # Disable third-party cookies
+            }
         )
       
         # initialize the Chrome driver with service, selenium-wire options, and chrome options

@@ -8,21 +8,14 @@ class Restaurant:
     def __init__(self) -> None:
         self.__name = ''
         self.__sub_name = ''
-        self.__wongnai_url = ''
-        self.__restaurantType = []
+        self.__type = []
         self.__facility = []
         self.__description = ''
         self.__latitude = 0
         self.__longitude = 0
         self.__imgPath = ['']
-        self.__phone = []
-        # website in key-value pair for example: 
-        # {
-        #     "Facebook"  : "https://www.facebook.com/Buono@Ranong",
-        #     "Instagram" : "https://www.instagram.com/buonoranong/",
-        #     "LINE@"     : "http://line.naver.jp/ti/p/@Buono%20Ranong"
-        # }
-        self.__website = {}
+        self.__phone = ''
+        self.__website = ''
         self.__openingHour = {}
         self.__priceRange = ''
         # location object
@@ -38,11 +31,8 @@ class Restaurant:
     def get_sub_name(self) -> str:
         return self.__sub_name 
 
-    def get_wongnai_url(self) -> str:
-        return self.__wongnai_url
-    
-    def get_restaurantType(self) -> list[str]:
-        return self.__restaurantType.copy()
+    def get_type(self) -> list[str]:
+        return self.__type.copy()
     
     def get_facility(self) -> list[str]:
         return self.__facility.copy()
@@ -59,11 +49,11 @@ class Restaurant:
     def get_imgPath(self) -> list[str]:
         return self.__imgPath.copy()
 
-    def get_phone(self) -> list[str]:
-        return self.__phone.copy()    
-
-    def get_website(self) -> dict:
-        return self.__website.copy()
+    def get_phone(self) -> str:
+        return self.__phone
+    
+    def get_website(self) -> str:
+        return self.__website
 
     def get_openingHour(self) -> dict:
         return self.__openingHour.copy()
@@ -85,11 +75,8 @@ class Restaurant:
     def set_sub_name(self, sub_name: str) -> None:
         self.__sub_name = sub_name
 
-    def set_wongnai_url(self, wongnai_url: str) -> None:
-        self.__wongnai_url = wongnai_url
-    
-    def set_restaurantType(self, restaurantType: list[str]) -> None:
-        self.__restaurantType = restaurantType.copy()
+    def set_type(self, type: list[str]) -> None:
+        self.__type = type.copy()
     
     def set_facility(self, facility: list[str]) -> None:
         self.__facility = facility.copy()
@@ -106,11 +93,11 @@ class Restaurant:
     def set_imgPath(self, imgPath: list[str]) -> None:
         self.__imgPath = imgPath.copy()
 
-    def set_phone(self, phone: list[str]) -> None:
-        self.__phone = phone.copy()    
-
-    def set_website(self, website: dict) -> None:
-        self.__website = website.copy()
+    def set_phone(self, phone:str) -> None:
+        self.__phone = phone
+    
+    def set_website(self, website:str) -> None:
+        self.__website = website
 
     def set_openingHour(self, openingHour: dict) -> None:
         self.__openingHour = openingHour.copy()
