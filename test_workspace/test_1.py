@@ -14,3 +14,6 @@ def test_list(arr:list):
 x = [1,2,3]
 test_list(x.copy())
 print(x)
+
+print("vfds")
+print(sys.path)
