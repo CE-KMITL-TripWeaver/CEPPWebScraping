@@ -1,3 +1,7 @@
+ALL_RESTAURANTS_TRIPADVISOR_DATA = [
+    ('Phuket', 'ภูเก็ต', 'https://th.tripadvisor.com/Restaurants-g1215781-Phuket_Town_Phuket.html'), 
+]
+
 ALL_REGION_ID_WONGNAI = [
     ('Phuket', 'ภูเก็ต', 843), 
     ('Nakhon Ratchasima', 'นครราชสีมา', 2671), 
