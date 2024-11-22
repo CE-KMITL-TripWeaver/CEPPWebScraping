@@ -1,8 +1,5 @@
-from bs4 import BeautifulSoup
 from selenium import webdriver
-import pyautogui
 import re
-from bs4 import BeautifulSoup
 import sys
 sys.path.append('.')
 import constants.constants as const
