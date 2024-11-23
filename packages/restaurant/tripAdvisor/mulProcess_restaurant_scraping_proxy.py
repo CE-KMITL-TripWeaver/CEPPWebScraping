@@ -433,7 +433,7 @@ def scrape_adjust_page(restaurant_page_driver: webdriver, link_to_adjust_page: s
             return lat, long, openingHours.copy(), types.copy(), facilities.copy()
 
         # wiat for element of types and facilities to load
-        time.sleep(16)
+        time.sleep(5)
 
         # find type
         try:     
@@ -845,10 +845,14 @@ def mulProcess_helper_scrape_restaurants_by_province(page: int, province_url: st
     all_url_by_page = get_all_url_by_page(query_url = province_url, page = page)
 
     # use data from 'res_get_data_by_page' to retrive data of specific restaurant
-    for cur_restaurant_url in all_url_by_page:
+    # print(all_url_by_page[0:len(all_url_by_page)//2])
+    # print(all_url_by_page[len(all_url_by_page)//2:])
+
+    # now scrape for half amount of restaurant
+    for cur_restaurant_url in all_url_by_page[0:len(all_url_by_page)//2]:
         # just use to limit amount of place --> will be removed 
-        if(cnt_for_debug == 5):
-            break
+        # if(cnt_for_debug == 2):
+        #     break
 
         # continue scraping data for a specific resgtaurant
         cur_restaurant = scrape_single_restaurant(
