@@ -849,7 +849,7 @@ def mulProcess_helper_scrape_restaurants_by_province(page: int, province_url: st
     # print(all_url_by_page[len(all_url_by_page)//2:])
 
     # now scrape for half amount of restaurant
-    for cur_restaurant_url in all_url_by_page[0:len(all_url_by_page)//2]:
+    for cur_restaurant_url in all_url_by_page[len(all_url_by_page)//2:]:
         # just use to limit amount of place --> will be removed 
         # if(cnt_for_debug == 2):
         #     break
