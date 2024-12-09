@@ -2,8 +2,6 @@ import sys
 import os
 import shutil
 import glob
-import pandas as pd
-import numpy as np
 
 sys.path.append('.')
 

@@ -46,3 +46,8 @@ STORE_ACCOMM_SCRAPING = os.path.join(path_to_proj, 'accommodation_scraping')
 ### path for destination to store result of 'merge_accommodation_scraping' ###
 
 STORE_MERGE_ACCOMM_SCRAPING = os.path.join(path_to_proj, 'merge_accommodation_scraping')
+
+
+### path for destination to store result of 'fill_attractionTag_score' ###
+
+STORE_FILL_ATTRACTION_TAG_SCORE = os.path.join(path_to_proj, 'fill_attractionTag_score')
