@@ -44,6 +44,7 @@ def create_restaurant_df(restaurant: Restaurant) -> pd.DataFrame:
         'imgPath' : [restaurant.get_imgPath()],
         'phone': [restaurant.get_phone()],
         'website': [restaurant.get_website()],
+        'openingHour': [restaurant.get_openingHour()],
         'facility': [restaurant.get_facility()],
         'type': [restaurant.get_type()],
 
@@ -446,8 +447,8 @@ def scrape_adjust_page(restaurant_page_driver: webdriver, link_to_adjust_page: s
                 cur_text = cur_element.text
                 if("หมวดหมู่อาหาร" in cur_text):
                     type_container = cur_element
-                    WebDriverWait(adjust_page_driver, 1).until(EC.visibility_of_element_located((By.CLASS_NAME, 'RCAPL')))
-                    all_type_element = type_container.find_elements(By.CLASS_NAME, 'RCAPL')
+                    WebDriverWait(adjust_page_driver, 1).until(EC.visibility_of_element_located((By.CLASS_NAME, 'vvmrG')))
+                    all_type_element = type_container.find_elements(By.CLASS_NAME, 'vvmrG')
                     for cur_type in all_type_element:
                         cur_text = cur_type.text
                         types.append(cur_text)
@@ -809,8 +810,8 @@ def get_all_url_by_page(query_url: str, page: int) -> list[str]:
             # wait for div (each restaurant section) to be present and visible
             print("b1 part 1")
             print("debug get_all_url_by_page: restaurant by one page section")
-            WebDriverWait(driver, 1).until(EC.visibility_of_element_located((By.CLASS_NAME, 'yJIls')))
-            all_restaurants_card = driver.find_elements(By.CLASS_NAME, 'yJIls')
+            WebDriverWait(driver, 1).until(EC.visibility_of_element_located((By.CLASS_NAME, 'tbrcR')))
+            all_restaurants_card = driver.find_elements(By.CLASS_NAME, 'tbrcR')
 
 
             # check if all accomodation card can get tag a and its attribute for url
